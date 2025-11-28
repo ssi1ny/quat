@@ -132,19 +132,24 @@
                 </div>
             </section>
 
-            <!-- Image Prompt Builder -->
+            <!-- Image Prompt Builder (Restored & Upgraded) -->
             <section>
                 <h2 class="serif text-xl mb-4 italic text-gray-800 flex items-center">
                     <i data-lucide="image" class="w-4 h-4 mr-2 text-dusty-pink"></i> Image Prompt Builder
                 </h2>
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
                     
-                    <!-- 1. Subject Input -->
+                    <!-- 1. Subject Input & Translate -->
                     <div>
                         <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Step 1. Subject (원하는 주제)</label>
-                        <input type="text" id="prompt-subject" 
-                            class="w-full bg-white border border-gray-200 rounded p-3 text-sm text-gray-800 focus:outline-none focus:border-[#C5A0A0] transition-colors placeholder-gray-300"
-                            placeholder="예: 토슈즈가 놓인 의자, 거울 셀카 (영문 추천)" oninput="updatePromptPreview()">
+                        <div class="flex gap-2">
+                            <input type="text" id="prompt-subject" 
+                                class="flex-1 bg-white border border-gray-200 rounded p-3 text-sm text-gray-800 focus:outline-none focus:border-[#C5A0A0] transition-colors placeholder-gray-300"
+                                placeholder="예: 토슈즈가 놓인 의자 (한글 입력 후 번역 가능)" oninput="updatePromptPreview()">
+                            <button onclick="translateSubject()" class="px-3 bg-white border border-gray-200 rounded text-gray-500 hover:bg-gray-100 hover:text-dusty-pink transition-colors" title="한글을 영어로 번역 (API Key 필요)">
+                                <i data-lucide="languages" class="w-4 h-4"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- 2. Style Formula (Editable) -->
@@ -267,7 +272,7 @@
         <div id="content-grid" class="hidden p-8 space-y-8 animate-fade-in">
             <div class="text-center space-y-2 mb-8">
                 <h2 class="serif text-2xl italic text-gray-800">Grid Planner</h2>
-                <p class="text-xs text-gray-400 font-light">Plan your aesthetic feed. Click blocks to delete.</p>
+                <p class="text-xs text-gray-400 font-light">Plan your aesthetic feed. Add blocks & Delete with ❌</p>
             </div>
 
             <!-- Feed Formula Tips (Moved Up) -->
@@ -457,7 +462,6 @@
         }
 
         // --- Image Formula Storage Logic ---
-        // UPDATED: Based on user feedback for vintage/lace/dried rose mood
         const DEFAULT_FORMULA = ", muted dusty pink and vintage cream color palette, coquette balletcore aesthetic, soft diffused lighting, subtle film grain, soft motion blur, nostalgic and romantic mood, delicate textures of satin, lace, and dried roses, pinterest style photography, --ar 4:5 --stylize 250";
         const FORMULA_STORAGE_KEY = 'dearToeFormula';
 
@@ -531,6 +535,56 @@
             copyToClipboard(previewEl.innerText);
         }
 
+        // --- Translation Logic ---
+        async function translateSubject() {
+            const subjectEl = document.getElementById('prompt-subject');
+            if (!subjectEl) return;
+            const text = subjectEl.value.trim();
+            if (!text) {
+                alert("번역할 텍스트를 입력해주세요.");
+                return;
+            }
+
+            const apiKey = document.getElementById('userApiKey').value.trim();
+            if (!apiKey) {
+                alert("번역 기능을 사용하려면 API Key를 저장해주세요.");
+                return;
+            }
+
+            // Simple visual feedback
+            const originalPlaceholder = subjectEl.placeholder;
+            subjectEl.placeholder = "Translating...";
+            
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `Translate the following short text to English for use in an image generation prompt. Output ONLY the English translation without any extra words or quotes.\n\nInput: ${text}`
+                            }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                if (data.error) throw new Error(data.error.message);
+
+                const translation = data.candidates[0].content.parts[0].text.trim();
+                subjectEl.value = translation;
+                updatePromptPreview();
+                showToast("Translated!");
+
+            } catch (error) {
+                console.error("Translation failed:", error);
+                alert("번역 실패: " + error.message);
+            } finally {
+                subjectEl.placeholder = originalPlaceholder;
+            }
+        }
+
         // --- Aesthetic Font Logic ---
         function toAestheticFont(text) {
             return text.split('').map(char => {
@@ -593,19 +647,18 @@
             
             const subtitles = {
                 'look': [
-                    "가녀린 어깨선", "튜튜 실루엣", "거울 속 포즈", "등 근육 라인", "발끝 포인", 
-                    "무릎 위 쉬폰", "번헤어 뒷모습", "루즈한 워머", "손끝 연기", "그림자 춤",
-                    "연습복 코디", "가벼운 턴", "스트레칭", "우아한 넥라인", "가녀린 팔"
+                    "전신 (얼굴X)", "반신 (거울 셀카)", "뒷모습 (등 라인)", "고전 명화풍 발레리나", "빈티지 발레 사진", 
+                    "드가(Degas) 스타일", "무대 뒤 스냅", "발레바 잡고", "플리에 동작", "우아한 넥라인"
                 ],
                 'detail': [
-                    "토슈즈 리본", "새틴 광택", "레이스 디테일", "진주 목걸이", "낡은 토슈즈", 
-                    "마른 장미", "쉬폰 주름", "토슈즈 끈 풀기", "땀방울", "반짝이는 큐빅",
-                    "리본 묶기", "발레 타이즈", "코르셋 디테일", "하얀 깃털", "반지"
+                    "토슈즈 앞코 확대", "토슈즈 신은 발끝", "리본 묶는 손", "발레 서적 (동작 그림)", "펼쳐진 옛날 악보",
+                    "새틴 광택", "레이스 디테일", "진주/악세사리", "마른 장미", "쉬폰 주름", 
+                    "벗어둔 토슈즈", "토슈즈 끈 풀린"
                 ],
                 'space': [
                     "햇살 가득 창가", "빈 연습실", "나무 바닥", "놓여진 튜튜", "창밖 풍경", 
                     "오후 4시의 빛", "엔틱 가구", "거울 앞", "커튼 사이 빛", "정리된 옷가지",
-                    "토슈즈 가방", "꽃병", "오래된 악보", "먼지 쌓인 창", "따뜻한 조명"
+                    "토슈즈 가방", "꽃병", "먼지 쌓인 창", "따뜻한 조명"
                 ]
             };
 
@@ -661,7 +714,7 @@
             }
 
             container.innerHTML = grid.map(item => {
-                let icon, bgColor;
+                let icon, bgColor, label;
                 switch(item.type) {
                     case 'look': icon = 'user'; bgColor = 'bg-white'; break;
                     case 'detail': icon = 'sparkles'; bgColor = 'bg-[#E8D3D3]/20'; break;
