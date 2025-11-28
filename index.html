@@ -161,7 +161,11 @@
                     <i data-lucide="chevron-down" id="api-chevron" class="w-3 h-3 transition-transform"></i>
                 </button>
                 <div id="apiKeySection" class="hidden bg-white p-4 border-t border-[#E8D3D3]">
-                    <div class="text-[11px] text-gray-400 mb-2 leading-relaxed">
+                    <div class="text-[11px] text-gray-400 mb-2 leading-relaxed bg-yellow-50 p-2 rounded text-yellow-800 border border-yellow-100">
+                        ⚠️ <strong>주의:</strong> 학교나 회사 계정은 보안 문제로 생성 오류가 날 수 있습니다.<br>
+                        오류 발생 시 <strong>'개인 구글 계정(@gmail.com)'</strong>으로 로그인해서 시도해주세요.
+                    </div>
+                    <div class="text-[11px] text-gray-400 mb-2 mt-2 leading-relaxed">
                         API 키를 입력하면 Gemini가 직접 글을 작성해줍니다.<br>
                         키가 없으면 내장된 랜덤 템플릿이 작동합니다.<br>
                         <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-dusty-pink underline hover:text-gray-600">Google AI Studio에서 키 발급받기 →</a>
@@ -216,7 +220,7 @@
         <div id="content-grid" class="hidden p-8 space-y-8 animate-fade-in">
             <div class="text-center space-y-2 mb-8">
                 <h2 class="serif text-2xl italic text-gray-800">Grid Planner</h2>
-                <p class="text-xs text-gray-400 font-light">Plan your aesthetic feed. Click to delete.</p>
+                <p class="text-xs text-gray-400 font-light">Plan your aesthetic feed. Add blocks & Delete with ❌</p>
             </div>
 
             <!-- Controls -->
@@ -240,8 +244,40 @@
                 <!-- Grid Items will be rendered here -->
             </div>
 
-            <div class="text-center mt-4">
-                <button onclick="resetGrid()" class="text-[10px] text-gray-400 underline hover:text-red-400 transition-colors">Reset Grid</button>
+            <!-- Reset Button with Confirmation State -->
+            <div class="text-center mt-4 mb-8">
+                <button id="btnResetGrid" onclick="handleResetGrid(this)" class="text-[10px] text-gray-400 underline hover:text-red-400 transition-colors">Reset Grid</button>
+            </div>
+
+            <!-- Feed Formula Tips -->
+            <div class="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <h3 class="serif text-sm italic text-gray-800 flex items-center mb-3">
+                    <i data-lucide="lightbulb" class="w-3 h-3 mr-2 text-dusty-pink"></i> Feed Formula
+                </h3>
+                <p class="text-[11px] text-gray-500 mb-4 leading-relaxed">
+                    AI 티가 나지 않게 하려면 <strong>'사람 - 사물 - 풍경'</strong>을 적절히 섞어야 합니다.
+                </p>
+                
+                <div class="grid grid-cols-3 gap-2 text-center mb-4">
+                    <div class="space-y-1">
+                        <div class="text-[10px] font-medium text-gray-600">Look</div>
+                        <div class="text-[9px] text-gray-400">전신 / 반신<br>(얼굴 없는 샷)</div>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="text-[10px] font-medium text-dusty-pink">Detail</div>
+                        <div class="text-[9px] text-gray-400">토슈즈 / 리본<br>니트 질감 확대</div>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="text-[10px] font-medium text-gray-500">Space</div>
+                        <div class="text-[9px] text-gray-400">햇살 든 창가<br>침대 위 옷가지</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 rounded border border-gray-100 text-[10px] text-gray-500 leading-relaxed">
+                    <strong class="text-dusty-pink">Color Tip:</strong><br>
+                    핑크색이 너무 많으면 촌스러울 수 있습니다.<br>
+                    중간중간 <strong>'흰색/크림색/회색'</strong> 비중이 높은 이미지를 섞어주세요.
+                </div>
             </div>
         </div>
 
@@ -366,6 +402,7 @@
 
         // --- Grid Planner Logic ---
         const GRID_STORAGE_KEY = 'dearToeGrid';
+        let resetTimeout; // Timeout for reset button confirmation state
         
         function getGrid() {
             const saved = localStorage.getItem(GRID_STORAGE_KEY);
@@ -379,9 +416,21 @@
 
         function addGridItem(type) {
             const grid = getGrid();
+            
+            // Subtitle Pools (Randomized Ballet keywords)
+            const subtitles = {
+                'look': ["전신 (얼굴X)", "반신 (거울)", "얼굴 없는 샷"],
+                'detail': ["토슈즈 / 리본", "니트 질감 확대"],
+                'space': ["햇살 든 창가", "침대 위 옷가지"]
+            };
+
+            const pool = subtitles[type] || [];
+            const randomSubtitle = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : "";
+
             const newItem = {
                 id: Date.now(),
                 type: type,
+                subtitle: randomSubtitle,
                 timestamp: new Date().toISOString()
             };
             // Add to the beginning (top-left in feed)
@@ -395,10 +444,27 @@
             saveGrid(newGrid);
         }
 
-        function resetGrid() {
-            if(confirm("모든 그리드를 삭제하시겠습니까?")) {
+        // Improved Reset Logic without confirm()
+        function handleResetGrid(btn) {
+            if (btn.innerText === "Confirm Reset?") {
+                // Execute Reset
                 localStorage.removeItem(GRID_STORAGE_KEY);
                 renderGrid();
+                
+                // Restore Button State
+                btn.innerText = "Reset Grid";
+                btn.classList.remove('text-red-500', 'font-bold');
+                clearTimeout(resetTimeout);
+            } else {
+                // First Click: Ask for Confirmation
+                btn.innerText = "Confirm Reset?";
+                btn.classList.add('text-red-500', 'font-bold');
+                
+                // Auto revert after 3 seconds
+                resetTimeout = setTimeout(() => {
+                    btn.innerText = "Reset Grid";
+                    btn.classList.remove('text-red-500', 'font-bold');
+                }, 3000);
             }
         }
 
@@ -438,11 +504,15 @@
                 }
                 
                 return `
-                    <div class="relative aspect-[4/5] ${bgColor} border border-gray-100 flex flex-col items-center justify-center group cursor-pointer grid-item-enter hover:opacity-80 transition-opacity" onclick="removeGridItem(${item.id})">
+                    <div class="relative aspect-[4/5] ${bgColor} border border-gray-100 flex flex-col items-center justify-center group cursor-pointer grid-item-enter hover:opacity-90 transition-opacity">
                         <i data-lucide="${icon}" class="w-4 h-4 text-gray-400 mb-1"></i>
                         <span class="text-[9px] text-gray-500 font-medium uppercase tracking-wider">${label}</span>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i data-lucide="trash-2" class="w-4 h-4 text-red-400"></i>
+                        <span class="text-[8px] text-gray-400 mt-1">${item.subtitle || ''}</span>
+                        
+                        <!-- Explicit Delete Button (Top-Right) -->
+                        <div onclick="removeGridItem(${item.id}); event.stopPropagation();" 
+                             class="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-white/80 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50">
+                            <i data-lucide="x" class="w-3 h-3 text-red-400"></i>
                         </div>
                     </div>
                 `;
