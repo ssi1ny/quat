@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dear.toe Brand Kit & Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons Script (Updated to unpkg for better stability) -->
+    <!-- Lucide Icons Script -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
@@ -63,6 +63,14 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* Grid Animation */
+        .grid-item-enter {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
@@ -71,7 +79,6 @@
     <header class="text-center mb-10">
         <div class="inline-block p-1 border border-gray-200 rounded-full mb-4">
             <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden relative">
-                <!-- Placeholder for Profile Image -->
                 <div class="absolute inset-0 bg-[#E8D3D3] opacity-30"></div>
                 <span class="serif text-2xl italic text-gray-600 z-10">d.t</span>
             </div>
@@ -85,17 +92,19 @@
         
         <!-- Tabs -->
         <div class="flex border-b border-gray-100">
-            <button onclick="switchTab('guide')" id="tab-guide" class="flex-1 py-4 text-center text-sm tracking-wide transition-colors tab-active">
+            <button onclick="switchTab('guide')" id="tab-guide" class="flex-1 py-4 text-center text-xs sm:text-sm tracking-wide transition-colors tab-active">
                 BRAND GUIDE
             </button>
-            <button onclick="switchTab('generator')" id="tab-generator" class="flex-1 py-4 text-center text-sm tracking-wide transition-colors tab-inactive">
-                CAPTION GENERATOR
+            <button onclick="switchTab('generator')" id="tab-generator" class="flex-1 py-4 text-center text-xs sm:text-sm tracking-wide transition-colors tab-inactive">
+                CAPTION MAKER
+            </button>
+            <button onclick="switchTab('grid')" id="tab-grid" class="flex-1 py-4 text-center text-xs sm:text-sm tracking-wide transition-colors tab-inactive">
+                GRID PLANNER
             </button>
         </div>
 
         <!-- Content: Brand Guide -->
         <div id="content-guide" class="p-8 space-y-8 animate-fade-in">
-            
             <!-- Identity -->
             <section>
                 <h2 class="serif text-xl mb-4 italic text-gray-800 flex items-center">
@@ -103,7 +112,7 @@
                 </h2>
                 <div class="bg-[#FDFBF7] p-6 rounded-lg border border-gray-100 space-y-3 text-sm">
                     <p><span class="font-medium text-gray-600">Meaning:</span> 나의 발끝(Toe)에게 보내는 편지</p>
-                    <p><span class="font-medium text-gray-600">Concept:</span> 발레라는 환상(Fantasy)의 시각화</p>
+                    <p><span class="font-medium text-gray-600">Concept:</span> 발레라는 환상(Fantasy) & 로망의 시각화</p>
                     <p><span class="font-medium text-gray-600">Persona:</span> 발레 미학 큐레이터</p>
                     <p><span class="font-medium text-gray-600">Tone:</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Dry</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Chic</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Minimal</span></p>
                 </div>
@@ -112,31 +121,12 @@
             <!-- Bio Options -->
             <section>
                 <h2 class="serif text-xl mb-4 italic text-gray-800 flex items-center">
-                    <i data-lucide="user" class="w-4 h-4 mr-2 text-dusty-pink"></i> Bio Options
+                    <i data-lucide="user" class="w-4 h-4 mr-2 text-dusty-pink"></i> Bio
                 </h2>
                 <div class="grid gap-4 text-sm">
-                    <!-- Option A -->
+                    <!-- Option A (Confirmed) -->
                     <div class="group relative border border-gray-100 rounded-lg p-4 hover:border-[#E8D3D3] transition-colors cursor-pointer" onclick="copyText(this, 'bio1')">
-                        <div class="flex justify-between items-start mb-1">
-                            <span class="text-xs font-bold text-dusty-pink uppercase tracking-widest">Style A (Reference)</span>
-                        </div>
-                        <p id="bio1" class="text-gray-600 leading-relaxed">Ballet Aesthetic 🦢<br>발레 | 무드 | 아카이브 ☁️<br>일상에 내려앉은 우아함의 조각들.<br>✉️ DM for inquiries</p>
-                        <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-xs text-dusty-pink transition-opacity">Click to Copy</span>
-                    </div>
-                    <!-- Option B -->
-                    <div class="group relative border border-gray-100 rounded-lg p-4 hover:border-[#E8D3D3] transition-colors cursor-pointer" onclick="copyText(this, 'bio2')">
-                         <div class="flex justify-between items-start mb-1">
-                            <span class="text-xs font-bold text-dusty-pink uppercase tracking-widest">Style B (Chic)</span>
-                        </div>
-                        <p id="bio2" class="text-gray-600 leading-relaxed">Collecting moments of grace.<br>닿고 싶은 선, 닮고 싶은 분위기.<br>▪️ Ballet mood curator<br>▪️ Daily inspiration 🩰</p>
-                        <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-xs text-dusty-pink transition-opacity">Click to Copy</span>
-                    </div>
-                    <!-- Option C -->
-                    <div class="group relative border border-gray-100 rounded-lg p-4 hover:border-[#E8D3D3] transition-colors cursor-pointer" onclick="copyText(this, 'bio3')">
-                         <div class="flex justify-between items-start mb-1">
-                            <span class="text-xs font-bold text-dusty-pink uppercase tracking-widest">Style C (Dreamy)</span>
-                        </div>
-                        <p id="bio3" class="text-gray-600 leading-relaxed">To my toes, with love.<br>발레가 주는 로망을 수집합니다.<br>* . ˚ 🩰 * . *</p>
+                        <p id="bio1" class="text-gray-600 leading-relaxed text-center">발레 | 무드 | 아카이브 🦢<br>* . ˚ 🩰 * . *</p>
                         <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-xs text-dusty-pink transition-opacity">Click to Copy</span>
                     </div>
                 </div>
@@ -155,12 +145,10 @@
                     </button>
                 </div>
             </section>
-
         </div>
 
         <!-- Content: Caption Generator -->
         <div id="content-generator" class="hidden p-8 space-y-8 animate-fade-in">
-            
             <div class="text-center space-y-2 mb-8">
                 <h2 class="serif text-2xl italic text-gray-800">Caption Maker</h2>
                 <p class="text-xs text-gray-400 font-light">Enter a keyword, get a dear.toe mood.</p>
@@ -190,7 +178,6 @@
                     <input type="text" id="userInput" placeholder="예: 햇살 받은 토슈즈, 연습실 거울 셀카" 
                         class="w-full bg-[#FDFBF7] border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#C5A0A0] transition-colors placeholder-gray-300">
                 </div>
-                
                 <div class="flex gap-4">
                     <div class="flex-1">
                         <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Language</label>
@@ -209,42 +196,53 @@
 
             <!-- Output Area -->
             <div id="resultArea" class="hidden space-y-6 pt-4 border-t border-gray-100">
-                
-                <!-- Variation 1 -->
+                <!-- Variations will be injected here -->
                 <div class="space-y-2">
-                    <div class="flex justify-between items-end">
-                        <span class="text-xs text-dusty-pink font-medium">Option A</span>
-                        <button onclick="copyOutput('result1')" class="text-[10px] text-gray-400 hover:text-gray-600 underline">COPY</button>
-                    </div>
-                    <div class="bg-[#FDFBF7] p-4 rounded-lg border border-gray-100">
-                        <p id="result1" class="text-sm text-gray-700 leading-relaxed font-light whitespace-pre-wrap"></p>
-                    </div>
+                    <div class="flex justify-between items-end"><span class="text-xs text-dusty-pink font-medium">Option A</span><button onclick="copyOutput('result1')" class="text-[10px] text-gray-400 hover:text-gray-600 underline">COPY</button></div>
+                    <div class="bg-[#FDFBF7] p-4 rounded-lg border border-gray-100"><p id="result1" class="text-sm text-gray-700 leading-relaxed font-light whitespace-pre-wrap"></p></div>
                 </div>
-
-                <!-- Variation 2 -->
                 <div class="space-y-2">
-                    <div class="flex justify-between items-end">
-                        <span class="text-xs text-dusty-pink font-medium">Option B</span>
-                        <button onclick="copyOutput('result2')" class="text-[10px] text-gray-400 hover:text-gray-600 underline">COPY</button>
-                    </div>
-                    <div class="bg-[#FDFBF7] p-4 rounded-lg border border-gray-100">
-                        <p id="result2" class="text-sm text-gray-700 leading-relaxed font-light whitespace-pre-wrap"></p>
-                    </div>
+                    <div class="flex justify-between items-end"><span class="text-xs text-dusty-pink font-medium">Option B</span><button onclick="copyOutput('result2')" class="text-[10px] text-gray-400 hover:text-gray-600 underline">COPY</button></div>
+                    <div class="bg-[#FDFBF7] p-4 rounded-lg border border-gray-100"><p id="result2" class="text-sm text-gray-700 leading-relaxed font-light whitespace-pre-wrap"></p></div>
                 </div>
-
-                <!-- Variation 3 -->
                 <div class="space-y-2">
-                    <div class="flex justify-between items-end">
-                        <span class="text-xs text-dusty-pink font-medium">Option C</span>
-                        <button onclick="copyOutput('result3')" class="text-[10px] text-gray-400 hover:text-gray-600 underline">COPY</button>
-                    </div>
-                    <div class="bg-[#FDFBF7] p-4 rounded-lg border border-gray-100">
-                        <p id="result3" class="text-sm text-gray-700 leading-relaxed font-light whitespace-pre-wrap"></p>
-                    </div>
+                    <div class="flex justify-between items-end"><span class="text-xs text-dusty-pink font-medium">Option C</span><button onclick="copyOutput('result3')" class="text-[10px] text-gray-400 hover:text-gray-600 underline">COPY</button></div>
+                    <div class="bg-[#FDFBF7] p-4 rounded-lg border border-gray-100"><p id="result3" class="text-sm text-gray-700 leading-relaxed font-light whitespace-pre-wrap"></p></div>
                 </div>
+            </div>
+        </div>
 
+        <!-- Content: Grid Planner -->
+        <div id="content-grid" class="hidden p-8 space-y-8 animate-fade-in">
+            <div class="text-center space-y-2 mb-8">
+                <h2 class="serif text-2xl italic text-gray-800">Grid Planner</h2>
+                <p class="text-xs text-gray-400 font-light">Plan your aesthetic feed. Click to delete.</p>
             </div>
 
+            <!-- Controls -->
+            <div class="flex gap-2 justify-center mb-6">
+                <button onclick="addGridItem('look')" class="flex flex-col items-center justify-center w-20 h-20 bg-white border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
+                    <i data-lucide="user" class="w-5 h-5 text-gray-600 mb-1"></i>
+                    <span class="text-[10px] text-gray-500">Look</span>
+                </button>
+                <button onclick="addGridItem('detail')" class="flex flex-col items-center justify-center w-20 h-20 bg-[#FDFBF7] border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-dusty-pink mb-1"></i>
+                    <span class="text-[10px] text-gray-500">Detail</span>
+                </button>
+                <button onclick="addGridItem('space')" class="flex flex-col items-center justify-center w-20 h-20 bg-gray-50 border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
+                    <i data-lucide="sun" class="w-5 h-5 text-gray-400 mb-1"></i>
+                    <span class="text-[10px] text-gray-500">Space</span>
+                </button>
+            </div>
+
+            <!-- Grid Display -->
+            <div id="feedGrid" class="grid grid-cols-3 gap-1 max-w-[350px] mx-auto bg-white border border-gray-100 p-1 rounded">
+                <!-- Grid Items will be rendered here -->
+            </div>
+
+            <div class="text-center mt-4">
+                <button onclick="resetGrid()" class="text-[10px] text-gray-400 underline hover:text-red-400 transition-colors">Reset Grid</button>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -260,46 +258,40 @@
     </div>
 
     <script>
-        // Ensure Lucide is loaded before using
+        // Ensure Lucide is loaded
         window.addEventListener('load', function() {
             if (window.lucide) {
                 lucide.createIcons();
+                renderGrid(); // Load grid on start
             }
         });
 
-        // State
+        // --- Common State & Functions ---
         let currentLang = 'ko';
 
-        // Tab Switching
         function switchTab(tabName) {
-            const guideContent = document.getElementById('content-guide');
-            const genContent = document.getElementById('content-generator');
-            const guideTab = document.getElementById('tab-guide');
-            const genTab = document.getElementById('tab-generator');
-
-            if (tabName === 'guide') {
-                guideContent.classList.remove('hidden');
-                genContent.classList.add('hidden');
-                guideTab.classList.add('tab-active');
-                guideTab.classList.remove('tab-inactive');
-                genTab.classList.add('tab-inactive');
-                genTab.classList.remove('tab-active');
-            } else {
-                guideContent.classList.add('hidden');
-                genContent.classList.remove('hidden');
-                guideTab.classList.add('tab-inactive');
-                guideTab.classList.remove('tab-active');
-                genTab.classList.add('tab-active');
-                genTab.classList.remove('tab-inactive');
-            }
+            const tabs = ['guide', 'generator', 'grid'];
+            tabs.forEach(t => {
+                const content = document.getElementById(`content-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    content.classList.remove('hidden');
+                    btn.classList.add('tab-active');
+                    btn.classList.remove('tab-inactive');
+                } else {
+                    content.classList.add('hidden');
+                    btn.classList.add('tab-inactive');
+                    btn.classList.remove('tab-active');
+                }
+            });
+            // Re-render icons when switching tabs just in case
+            setTimeout(() => lucide.createIcons(), 50);
         }
 
-        // Language Selection
         function setLanguage(lang) {
             currentLang = lang;
             const btnKo = document.getElementById('lang-ko');
             const btnEn = document.getElementById('lang-en');
-
             if (lang === 'ko') {
                 btnKo.classList.add('bg-[#E8D3D3]', 'border-[#C5A0A0]', 'text-gray-700');
                 btnKo.classList.remove('text-gray-400', 'hover:bg-gray-50', 'border-gray-200');
@@ -313,30 +305,53 @@
             }
         }
 
-        // Copy Function
+        // --- Clipboard Helper Function for iFrame Compatibility ---
+        function copyToClipboard(text) {
+            // Create a temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            
+            // Make it invisible but part of the DOM
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '0';
+            document.body.appendChild(textarea);
+            
+            // Select and copy
+            textarea.focus();
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast();
+                } else {
+                    console.error('Fallback: Copying text command was unsuccessful');
+                }
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+            
+            // Cleanup
+            document.body.removeChild(textarea);
+        }
+
         function copyText(element, targetId) {
             const text = document.getElementById(targetId).innerText; 
-            navigator.clipboard.writeText(text).then(() => {
-                showToast();
-            });
+            copyToClipboard(text);
         }
         
         function copyOutput(targetId) {
             const text = document.getElementById(targetId).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                showToast();
-            });
+            copyToClipboard(text);
         }
 
         function showToast() {
             const toast = document.getElementById('toast');
             toast.classList.remove('opacity-0');
-            setTimeout(() => {
-                toast.classList.add('opacity-0');
-            }, 2000);
+            setTimeout(() => toast.classList.add('opacity-0'), 2000);
         }
 
-        // Toggle API Key Section
         function toggleApiKeySection() {
             const section = document.getElementById('apiKeySection');
             const chevron = document.getElementById('api-chevron');
@@ -349,7 +364,95 @@
             }
         }
 
-        // Helper: Get Tags
+        // --- Grid Planner Logic ---
+        const GRID_STORAGE_KEY = 'dearToeGrid';
+        
+        function getGrid() {
+            const saved = localStorage.getItem(GRID_STORAGE_KEY);
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function saveGrid(grid) {
+            localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify(grid));
+            renderGrid();
+        }
+
+        function addGridItem(type) {
+            const grid = getGrid();
+            const newItem = {
+                id: Date.now(),
+                type: type,
+                timestamp: new Date().toISOString()
+            };
+            // Add to the beginning (top-left in feed)
+            grid.unshift(newItem);
+            saveGrid(grid);
+        }
+
+        function removeGridItem(id) {
+            const grid = getGrid();
+            const newGrid = grid.filter(item => item.id !== id);
+            saveGrid(newGrid);
+        }
+
+        function resetGrid() {
+            if(confirm("모든 그리드를 삭제하시겠습니까?")) {
+                localStorage.removeItem(GRID_STORAGE_KEY);
+                renderGrid();
+            }
+        }
+
+        function renderGrid() {
+            const grid = getGrid();
+            const container = document.getElementById('feedGrid');
+            
+            if (grid.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-3 py-10 text-center text-gray-300 text-xs">
+                        <i data-lucide="layout-grid" class="w-6 h-6 mx-auto mb-2 opacity-30"></i>
+                        Empty Grid<br>Add blocks to plan
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = grid.map(item => {
+                let icon, bgColor, label;
+                switch(item.type) {
+                    case 'look':
+                        icon = 'user';
+                        bgColor = 'bg-white';
+                        label = 'Look';
+                        break;
+                    case 'detail':
+                        icon = 'sparkles';
+                        bgColor = 'bg-[#E8D3D3]/20';
+                        label = 'Detail';
+                        break;
+                    case 'space':
+                        icon = 'sun';
+                        bgColor = 'bg-gray-50';
+                        label = 'Space';
+                        break;
+                }
+                
+                return `
+                    <div class="relative aspect-[4/5] ${bgColor} border border-gray-100 flex flex-col items-center justify-center group cursor-pointer grid-item-enter hover:opacity-80 transition-opacity" onclick="removeGridItem(${item.id})">
+                        <i data-lucide="${icon}" class="w-4 h-4 text-gray-400 mb-1"></i>
+                        <span class="text-[9px] text-gray-500 font-medium uppercase tracking-wider">${label}</span>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i data-lucide="trash-2" class="w-4 h-4 text-red-400"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+
+
+        // --- Generator Logic ---
         function getRandomTags() {
             const baseTags = "#발레 #ballet";
             const tagPool = [
@@ -362,7 +465,6 @@
             return `${baseTags} ${selected.join(' ')}`;
         }
 
-        // Main Handler
         async function handleGenerate() {
             const input = document.getElementById('userInput').value.trim();
             const apiKey = document.getElementById('userApiKey').value.trim();
@@ -374,7 +476,6 @@
                 return;
             }
 
-            // UI Loading State
             btn.innerHTML = '<div class="loader"></div>';
             btn.disabled = true;
 
@@ -387,14 +488,13 @@
                 resultArea.classList.remove('hidden');
             } catch (error) {
                 console.error(error);
-                alert("오류가 발생했습니다. API Key를 확인하거나 잠시 후 다시 시도해주세요. \nError: " + error.message);
+                alert("오류가 발생했습니다: " + error.message);
             } finally {
                 btn.innerHTML = 'GENERATE';
                 btn.disabled = false;
             }
         }
 
-        // 1. Logic: Template (Fallback)
         function generateWithTemplate(input) {
             const tags = getRandomTags();
             let opt1, opt2, opt3;
@@ -418,52 +518,23 @@
             document.getElementById('result3').innerText = opt3;
         }
 
-        // 2. Logic: Real AI (Google Gemini API)
         async function generateWithAI(input, apiKey) {
             const langInstruction = currentLang === 'ko' ? "Use Korean." : "Use English.";
-            
-            const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account.
-            Tone: Dry, Chic, Minimalist, Emotional but controlled.
-            Rules:
-            1. No emojis (max 1 allowed).
-            2. Short (2-3 lines max).
-            3. No "Hello everyone" or "Cheer up".
-            4. ${langInstruction} (Do not mix languages unless it's a very short phrase like 'My balance').
-            5. Provide 3 distinct options separated by '|||'.
-            6. Do not include hashtags in your text (I will append them).
-            
-            Input situation: ${input}`;
-
-            // Gemini API Endpoint (gemini-1.5-flash is fast and good for text)
+            const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. Tone: Dry, Chic, Minimalist. Rules: No emojis (max 1), Short (2-3 lines), No greetings. ${langInstruction}. Provide 3 distinct options separated by '|||'. Input: ${input}`;
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
             const response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: `${systemPrompt}\n\nGenerate 3 captions options now.`
-                        }]
-                    }]
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: `${systemPrompt}\n\nGenerate 3 options.` }] }] })
             });
 
             const data = await response.json();
-            
-            if (data.error) {
-                throw new Error(data.error.message);
-            }
+            if (data.error) throw new Error(data.error.message);
 
-            // Extract text from Gemini response structure
             const rawText = data.candidates[0].content.parts[0].text;
             const options = rawText.split('|||');
             const tags = getRandomTags();
-
-            // Fill slots (handle case where AI generates fewer than 3 splits)
-            // Trim whitespace and remove markdown bolding if present
             const clean = (text) => text ? text.replace(/\*\*/g, '').trim() : "AI Error";
 
             document.getElementById('result1').innerText = clean(options[0]) + `\n.\n${tags}`;
@@ -471,13 +542,9 @@
             document.getElementById('result3').innerText = clean(options[2] || options[0]) + `\n.\n${tags}`;
         }
 
-        // Trigger generation on Enter key
         document.getElementById('userInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                handleGenerate();
-            }
+            if (e.key === 'Enter') handleGenerate();
         });
-
     </script>
 </body>
 </html>
