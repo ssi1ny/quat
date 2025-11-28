@@ -559,7 +559,7 @@
             subjectEl.placeholder = "Translating...";
             
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -720,9 +720,9 @@
             container.innerHTML = grid.map(item => {
                 let icon, bgColor, label;
                 switch(item.type) {
-                    case 'look': icon = 'user'; bgColor = 'bg-white'; label = 'Look'; break;
-                    case 'detail': icon = 'sparkles'; bgColor = 'bg-[#E8D3D3]/20'; label = 'Detail'; break;
-                    case 'space': icon = 'sun'; bgColor = 'bg-gray-50'; label = 'Space'; break;
+                    case 'look': icon = 'user'; bgColor = 'bg-white'; break;
+                    case 'detail': icon = 'sparkles'; bgColor = 'bg-[#E8D3D3]/20'; break;
+                    case 'space': icon = 'sun'; bgColor = 'bg-gray-50'; break;
                 }
                 
                 return `
@@ -780,7 +780,7 @@
         async function generateWithAI(input, apiKey) {
             const langInstruction = currentLang === 'ko' ? "Use Korean." : "Use English.";
             const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. Tone: Dry, Chic, Minimalist but dreamy. Rules: Use 1-2 emojis (e.g. 🩰, 🦢, ☁️, 🎀, 🪽) OR 1-2 aesthetic symbols (e.g. 𖥔, ݁, ˖, ˳, 𓂃, 𝜗𝜚, 𓆩♡𓆪, ☪︎). STRICT RULE: Do NOT mix standard emojis with aesthetic symbols in the same caption. Use ONE type or the other. Short (2-3 lines). No greetings. ${langInstruction}. STRICT RULE: Do NOT mix languages in the caption text. Use proper ballet terminology (e.g., Plié, Tendu, Arabesque, Pointe, Satin, Ribbon, Tulle, Ethereal, Adagio, Silhouette) instead of generic words like 'dance' or 'shoes'. IMPORTANT: Do NOT repeat the user's input description in the output. Use it only as context to generate a mood/keyword. (Hashtags are handled separately, so just generate the text). Provide 3 distinct options separated by '|||'. Input description: ${input}`;
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -803,7 +803,7 @@
 
         async function handleGenerate() {
             const input = document.getElementById('userInput').value.trim();
-            const apiKey = document.getElementById('userApiKey') ? document.getElementById('userApiKey').value.trim() : '';
+            const apiKey = document.getElementById('userApiKey').value.trim();
             const btn = document.getElementById('generateBtn');
             const resultArea = document.getElementById('resultArea');
             
