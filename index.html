@@ -132,17 +132,30 @@
                 </div>
             </section>
 
-            <!-- Image Prompt Formula -->
+            <!-- Image Prompt Formula (Editable & Savable) -->
             <section>
                 <h2 class="serif text-xl mb-4 italic text-gray-800 flex items-center">
                     <i data-lucide="image" class="w-4 h-4 mr-2 text-dusty-pink"></i> Image Master Formula
                 </h2>
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <p class="text-xs text-gray-400 mb-2 uppercase tracking-wider">Copy & Paste at the end of prompt</p>
-                    <p id="master-prompt" class="text-sm text-gray-600 font-mono break-all leading-relaxed">, dusty pink and cream white color palette, soft natural lighting, ethereal atmosphere, grainy film photography texture, captured on Kodak Portra 400, dreamy and hazy mood, minimalist composition, --ar 4:5 --stylize 250</p>
-                    <button onclick="copyText(this, 'master-prompt')" class="mt-3 w-full py-2 bg-white border border-gray-200 rounded text-xs text-gray-500 hover:text-dusty-pink hover:border-dusty-pink transition-colors">
-                        Copy Formula
-                    </button>
+                    <div class="flex justify-between items-center mb-2">
+                        <p class="text-xs text-gray-400 uppercase tracking-wider">Editable Formula</p>
+                        <button onclick="resetFormula()" class="text-[10px] text-gray-400 underline hover:text-red-400">Reset to Default</button>
+                    </div>
+                    
+                    <!-- Editable Textarea -->
+                    <textarea id="master-prompt" 
+                        class="w-full h-24 bg-white border border-gray-200 rounded p-3 text-sm text-gray-600 font-mono focus:outline-none focus:border-[#C5A0A0] transition-colors resize-none mb-3 leading-relaxed"
+                        placeholder="프롬프트 공통 설정값을 입력하세요..."></textarea>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="saveFormula()" class="flex-1 py-2 bg-gray-800 text-white text-xs rounded hover:bg-gray-700 transition-colors shadow-sm flex justify-center items-center">
+                            <i data-lucide="save" class="w-3 h-3 mr-1"></i> Save
+                        </button>
+                        <button onclick="copyFormula()" class="flex-1 py-2 bg-white border border-gray-200 text-gray-500 text-xs rounded hover:text-dusty-pink hover:border-dusty-pink transition-colors flex justify-center items-center">
+                            <i data-lucide="copy" class="w-3 h-3 mr-1"></i> Copy
+                        </button>
+                    </div>
                 </div>
             </section>
         </div>
@@ -172,6 +185,7 @@
                     </div>
                     <input type="password" id="userApiKey" placeholder="AI..." 
                         class="w-full bg-gray-50 border border-gray-200 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#C5A0A0] transition-colors">
+                    <button onclick="saveApiKey()" class="mt-2 w-full py-2 bg-gray-800 text-white text-xs rounded hover:bg-gray-700 transition-colors shadow-sm">Save</button>
                 </div>
             </div>
 
@@ -231,34 +245,8 @@
                 <p class="text-xs text-gray-400 font-light">Plan your aesthetic feed. Add blocks & Delete with ❌</p>
             </div>
 
-            <!-- Controls -->
-            <div class="flex gap-2 justify-center mb-6">
-                <button onclick="addGridItem('look')" class="flex flex-col items-center justify-center w-20 h-20 bg-white border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
-                    <i data-lucide="user" class="w-5 h-5 text-gray-600 mb-1"></i>
-                    <span class="text-[10px] text-gray-500">Look</span>
-                </button>
-                <button onclick="addGridItem('detail')" class="flex flex-col items-center justify-center w-20 h-20 bg-[#FDFBF7] border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
-                    <i data-lucide="sparkles" class="w-5 h-5 text-dusty-pink mb-1"></i>
-                    <span class="text-[10px] text-gray-500">Detail</span>
-                </button>
-                <button onclick="addGridItem('space')" class="flex flex-col items-center justify-center w-20 h-20 bg-gray-50 border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
-                    <i data-lucide="sun" class="w-5 h-5 text-gray-400 mb-1"></i>
-                    <span class="text-[10px] text-gray-500">Space</span>
-                </button>
-            </div>
-
-            <!-- Grid Display -->
-            <div id="feedGrid" class="grid grid-cols-3 gap-1 max-w-[350px] mx-auto bg-white border border-gray-100 p-1 rounded">
-                <!-- Grid Items will be rendered here -->
-            </div>
-
-            <!-- Reset Button with Confirmation State -->
-            <div class="text-center mt-4 mb-8">
-                <button id="btnResetGrid" onclick="handleResetGrid(this)" class="text-[10px] text-gray-400 underline hover:text-red-400 transition-colors">Reset Grid</button>
-            </div>
-
             <!-- Feed Formula Tips -->
-            <div class="bg-gray-50 p-5 rounded-lg border border-gray-100">
+            <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 mb-8">
                 <h3 class="serif text-sm italic text-gray-800 flex items-center mb-3">
                     <i data-lucide="lightbulb" class="w-3 h-3 mr-2 text-dusty-pink"></i> Feed Formula
                 </h3>
@@ -287,6 +275,32 @@
                     중간중간 <strong>'흰색/크림색/회색'</strong> 비중이 높은 이미지를 섞어주세요.
                 </div>
             </div>
+
+            <!-- Controls -->
+            <div class="flex gap-2 justify-center mb-6">
+                <button onclick="addGridItem('look')" class="flex flex-col items-center justify-center w-20 h-20 bg-white border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
+                    <i data-lucide="user" class="w-5 h-5 text-gray-600 mb-1"></i>
+                    <span class="text-[10px] text-gray-500">Look</span>
+                </button>
+                <button onclick="addGridItem('detail')" class="flex flex-col items-center justify-center w-20 h-20 bg-[#FDFBF7] border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-dusty-pink mb-1"></i>
+                    <span class="text-[10px] text-gray-500">Detail</span>
+                </button>
+                <button onclick="addGridItem('space')" class="flex flex-col items-center justify-center w-20 h-20 bg-gray-50 border border-gray-200 rounded-lg hover:border-[#E8D3D3] hover:shadow-sm transition-all">
+                    <i data-lucide="sun" class="w-5 h-5 text-gray-400 mb-1"></i>
+                    <span class="text-[10px] text-gray-500">Space</span>
+                </button>
+            </div>
+
+            <!-- Grid Display -->
+            <div id="feedGrid" class="grid grid-cols-3 gap-1 max-w-[350px] mx-auto bg-white border border-gray-100 p-1 rounded">
+                <!-- Grid Items will be rendered here -->
+            </div>
+
+            <!-- Reset Button with Confirmation State -->
+            <div class="text-center mt-4 mb-8">
+                <button id="btnResetGrid" onclick="handleResetGrid(this)" class="text-[10px] text-gray-400 underline hover:text-red-400 transition-colors">Reset Grid</button>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -306,7 +320,13 @@
         window.addEventListener('load', function() {
             if (window.lucide) {
                 lucide.createIcons();
-                renderGrid(); // Load grid on start
+                
+                // Load saved formula
+                loadFormula();
+                // Load grid
+                renderGrid(); 
+                // Load Saved API Key
+                loadApiKey();
             }
         });
 
@@ -328,7 +348,6 @@
                     btn.classList.remove('tab-active');
                 }
             });
-            // Re-render icons when switching tabs just in case
             setTimeout(() => lucide.createIcons(), 50);
         }
 
@@ -359,16 +378,11 @@
             document.body.appendChild(textarea);
             textarea.focus();
             textarea.select();
-            
             try {
                 const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast();
-                } else {
-                    console.error('Fallback: Copying text command was unsuccessful');
-                }
+                if (successful) showToast("Copied to clipboard");
             } catch (err) {
-                console.error('Fallback: Oops, unable to copy', err);
+                console.error('Fallback copy failed', err);
             }
             document.body.removeChild(textarea);
         }
@@ -383,8 +397,9 @@
             copyToClipboard(text);
         }
 
-        function showToast() {
+        function showToast(message = "Copied to clipboard") {
             const toast = document.getElementById('toast');
+            toast.innerText = message;
             toast.classList.remove('opacity-0');
             setTimeout(() => toast.classList.add('opacity-0'), 2000);
         }
@@ -401,17 +416,60 @@
             }
         }
 
+        // --- API Key Management ---
+        const API_KEY_STORAGE = 'dearToeApiKey';
+
+        function loadApiKey() {
+            const savedKey = localStorage.getItem(API_KEY_STORAGE);
+            if (savedKey) {
+                document.getElementById('userApiKey').value = savedKey;
+            }
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('userApiKey').value.trim();
+            if (!key) {
+                alert("API Key를 입력해주세요.");
+                return;
+            }
+            localStorage.setItem(API_KEY_STORAGE, key);
+            showToast("API Key가 저장되었습니다.");
+        }
+
+        // --- Image Formula Storage Logic ---
+        const DEFAULT_FORMULA = ", soft baby pink and vintage cream color palette, coquette balletcore aesthetic, dreamy and hazy atmosphere, soft natural lighting, nostalgic and romantic mood, delicate textures of satin and lace, pinterest style photography, --ar 4:5 --stylize 250";
+        const FORMULA_STORAGE_KEY = 'dearToeFormula';
+
+        function loadFormula() {
+            const saved = localStorage.getItem(FORMULA_STORAGE_KEY);
+            document.getElementById('master-prompt').value = saved || DEFAULT_FORMULA;
+        }
+
+        function saveFormula() {
+            const current = document.getElementById('master-prompt').value;
+            localStorage.setItem(FORMULA_STORAGE_KEY, current);
+            showToast("Formula Saved");
+        }
+
+        function copyFormula() {
+            const text = document.getElementById('master-prompt').value;
+            copyToClipboard(text);
+        }
+
+        function resetFormula() {
+            if(confirm("기본 설정값으로 되돌리시겠습니까?")) {
+                document.getElementById('master-prompt').value = DEFAULT_FORMULA;
+                saveFormula();
+            }
+        }
+
         // --- Aesthetic Font Logic ---
         function toAestheticFont(text) {
             return text.split('').map(char => {
                 const code = char.charCodeAt(0);
-                // Uppercase A-Z (U+1D434 - U+1D44D)
-                if (code >= 65 && code <= 90) {
-                    return String.fromCodePoint(0x1D434 + code - 65);
-                }
-                // Lowercase a-z (U+1D44E - U+1D467)
+                if (code >= 65 && code <= 90) return String.fromCodePoint(0x1D434 + code - 65);
                 if (code >= 97 && code <= 122) {
-                    if (char === 'h') return 'ℎ'; // Special handling for 'h' (Planck constant)
+                    if (char === 'h') return 'ℎ'; 
                     return String.fromCodePoint(0x1D44E + code - 97);
                 }
                 return char;
@@ -421,41 +479,29 @@
         function applyStyle(text) {
             const useAesthetic = document.getElementById('aestheticFont').checked;
             if (!useAesthetic) return text;
-
-            // Simple parser to avoid converting hashtags
-            // 1. Split by spaces
             return text.split(/(\s+)/).map(word => {
-                // If it starts with #, don't convert
                 if (word.startsWith('#')) return word;
-                // Otherwise convert english chars
                 return toAestheticFont(word);
             }).join('');
         }
 
-        // --- Aesthetic Decorations (Separated for Mix Logic) ---
-        // Expanded atoms list (30+ symbols)
+        // --- Aesthetic Decorations ---
         const aestheticAtoms = [
             "𓂃", "˖", "˳", "·", "ִֶָ", "⋆", "˚", "✧", "₊", "୨୧", "⟡", "｡", "𝜗𝜚", "⊹", "‧", "𖥔", "݁", ".", "・", "゜", "﹒", "．",
             "⭑", "♢", "𓆩", "♡", "𓆪", "⸝", "꒰", "❣", "⁺", "꒱", "❥", "┈", "༚", "༅", "⁎", "⛧", "꙳", "⭒", "☪︎", "＊", "☾", "⟢", "🧂"
         ];
-        
         const balletEmojis = ["🩰", "🦢", "☁️", "🎀", "🕊️", "🤍", "🪽", "🎗️", "🗝️", "🪞", "🕯️", "🍰", "🎐", "🫧", "🧁", "🧚‍♀️", "🏹"];
 
         function getDecoration() {
-            // 50% chance for Atoms (mixed), 50% chance for single Emoji
-            // Never mix atoms and emojis in the same block
             if (Math.random() > 0.5) {
-                // Generate a random combination of 2-4 atoms
-                const length = Math.floor(Math.random() * 3) + 2; // 2 to 4
+                const length = Math.floor(Math.random() * 3) + 2; 
                 let result = "";
                 for (let i = 0; i < length; i++) {
                     result += aestheticAtoms[Math.floor(Math.random() * aestheticAtoms.length)];
-                    // Add a space randomly for separation, but not always
                     if (Math.random() > 0.7) result += " ";
                 }
                 return result.trim();
             } else {
-                // Return a single random emoji
                 return balletEmojis[Math.floor(Math.random() * balletEmojis.length)];
             }
         }
@@ -478,9 +524,19 @@
             const grid = getGrid();
             
             const subtitles = {
-                'look': ["전신 (얼굴X)", "반신 (거울)", "얼굴 없는 샷"],
-                'detail': ["토슈즈 / 리본", "니트 질감 확대"],
-                'space': ["햇살 든 창가", "침대 위 옷가지"]
+                'look': [
+                    "전신 (얼굴X)", "반신 (거울 셀카)", "뒷모습 (등 라인)", "앉아있는 포즈", "스트레칭 (다리)", 
+                    "손끝 디테일", "목선/쇄골 라인", "발레 bun 헤어", "발레바 잡고", "플리에 동작"
+                ],
+                'detail': [
+                    "토슈즈 (리본 묶기)", "새틴 질감 확대", "발레 스커트 (튤)", "레오타드 끈 디테일", 
+                    "니트 워머 주름", "벗어둔 토슈즈", "악세사리 (진주/리본)", "쉬폰 소재감", 
+                    "토슈즈 끈 풀린", "땀방울 디테일"
+                ],
+                'space': [
+                    "햇살 든 연습실", "나무 바닥/플로어", "창가 커튼", "침대 위 옷가지", "발레바 (Barre)", 
+                    "거울 속 풍경", "빈 의자", "꽃병과 빛", "토슈즈 가방", "연습실 구석"
+                ]
             };
 
             const pool = subtitles[type] || [];
@@ -537,32 +593,16 @@
             container.innerHTML = grid.map(item => {
                 let icon, bgColor, label;
                 switch(item.type) {
-                    case 'look':
-                        icon = 'user';
-                        bgColor = 'bg-white';
-                        label = 'Look';
-                        break;
-                    case 'detail':
-                        icon = 'sparkles';
-                        bgColor = 'bg-[#E8D3D3]/20';
-                        label = 'Detail';
-                        break;
-                    case 'space':
-                        icon = 'sun';
-                        bgColor = 'bg-gray-50';
-                        label = 'Space';
-                        break;
+                    case 'look': icon = 'user'; bgColor = 'bg-white'; label = 'Look'; break;
+                    case 'detail': icon = 'sparkles'; bgColor = 'bg-[#E8D3D3]/20'; label = 'Detail'; break;
+                    case 'space': icon = 'sun'; bgColor = 'bg-gray-50'; label = 'Space'; break;
                 }
                 
                 return `
-                    <div class="relative aspect-[4/5] ${bgColor} border border-gray-100 flex flex-col items-center justify-center group cursor-pointer grid-item-enter hover:opacity-90 transition-opacity">
+                    <div class="relative aspect-[4/5] ${bgColor} border border-gray-100 flex flex-col items-center justify-center group cursor-pointer grid-item-enter hover:opacity-90 transition-opacity" onclick="removeGridItem(${item.id})">
                         <i data-lucide="${icon}" class="w-4 h-4 text-gray-400 mb-1"></i>
                         <span class="text-[9px] text-gray-500 font-medium uppercase tracking-wider">${label}</span>
                         <span class="text-[8px] text-gray-400 mt-1">${item.subtitle || ''}</span>
-                        <div onclick="removeGridItem(${item.id}); event.stopPropagation();" 
-                             class="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-white/80 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50">
-                            <i data-lucide="x" class="w-3 h-3 text-red-400"></i>
-                        </div>
                     </div>
                 `;
             }).join('');
@@ -570,33 +610,23 @@
             lucide.createIcons();
         }
 
-
         // --- Generator Logic ---
         function getRandomTags() {
             const baseTags = "#발레 #ballet";
-            const tagPool = [
-                "#dear_toe", "#발레코어", "#취미발레", "#발레스타그램", "#토슈즈", 
-                "#감성사진", "#무드보드", "#balletcore", "#balletaesthetic", 
-                "#softgirl", "#dreamyaesthetic", "#레오타드", "#ootd"
-            ];
+            const tagPool = ["#dear_toe", "#발레코어", "#취미발레", "#발레스타그램", "#토슈즈", "#감성사진", "#무드보드", "#balletcore", "#balletaesthetic", "#softgirl", "#dreamyaesthetic", "#레오타드", "#ootd"];
             const shuffled = tagPool.sort(() => 0.5 - Math.random());
-            const selected = shuffled.slice(0, 4);
-            return `${baseTags} ${selected.join(' ')}`;
+            return `${baseTags} ${shuffled.slice(0, 4).join(' ')}`;
         }
 
         function generateWithTemplate(input) {
             const tags = getRandomTags();
             let opt1, opt2, opt3;
 
-            // Updated Phrases with Ballet Terms & Mood Board words
             if (currentLang === 'ko') {
-                const phrases = [
-                    "En pointe.", "오후의 볕.", "Grand Plié.", "취향의 조각.", "Port de bras.", 
-                    "가볍게.", "Tendu.", "Arabesque line.", "Satin mood.", "공기 같은 튤.", 
-                    "Ethereal.", "나만의 호흡.", "우아한 정적.", "Silhouette.", "Adagio."
-                ];
+                const phrases = ["En pointe.", "오후의 볕.", "Grand Plié.", "취향의 조각.", "Port de bras.", "가볍게.", "Tendu.", "Arabesque line.", "Satin mood.", "공기 같은 튤.", "Ethereal.", "나만의 호흡.", "우아한 정적.", "Silhouette.", "Adagio."];
                 const phrase = phrases[Math.floor(Math.random() * phrases.length)];
                 
+                // Only output the phrase/vibe, NOT the input text
                 const raw1 = phrase;
                 const raw2 = `담백하게.`;
                 const raw3 = `중심.`;
@@ -605,11 +635,7 @@
                 opt2 = `${applyStyle(raw2)} ${getDecoration()}\n.\n${tags}`;
                 opt3 = `${applyStyle(raw3)} ${getDecoration()}\n.\n${tags}`;
             } else {
-                const phrases = [
-                    "Soft layers.", "En pointe.", "Silence.", "Mood.", "Grand Plié.", 
-                    "Morning light.", "Pure lines.", "Tendu.", "Satin mood.", "Ethereal.", 
-                    "Tulle dreams.", "Graceful.", "Adagio.", "Swan lake.", "Ballerina soul."
-                ];
+                const phrases = ["Soft layers.", "En pointe.", "Silence.", "Mood.", "Grand Plié.", "Morning light.", "Pure lines.", "Tendu.", "Satin mood.", "Ethereal.", "Tulle dreams.", "Graceful.", "Adagio.", "Swan lake.", "Ballerina soul."];
                 const phrase = phrases[Math.floor(Math.random() * phrases.length)];
                 
                 const raw1 = phrase;
@@ -628,7 +654,6 @@
 
         async function generateWithAI(input, apiKey) {
             const langInstruction = currentLang === 'ko' ? "Use Korean." : "Use English.";
-            // Updated Prompt with strict aesthetic instructions
             const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. Tone: Dry, Chic, Minimalist but dreamy. Rules: Use 1-2 emojis (e.g. 🩰, 🦢, ☁️, 🎀, 🪽) OR 1-2 aesthetic symbols (e.g. 𖥔, ݁, ˖, ˳, 𓂃, 𝜗𝜚, 𓆩♡𓆪, ☪︎). STRICT RULE: Do NOT mix standard emojis with aesthetic symbols in the same caption. Use ONE type or the other. Short (2-3 lines). No greetings. ${langInstruction}. STRICT RULE: Do NOT mix languages in the caption text. Use proper ballet terminology (e.g., Plié, Tendu, Arabesque, Pointe, Satin, Ribbon, Tulle, Ethereal, Adagio, Silhouette) instead of generic words like 'dance' or 'shoes'. IMPORTANT: Do NOT repeat the user's input description in the output. Use it only as context to generate a mood/keyword. (Hashtags are handled separately, so just generate the text). Provide 3 distinct options separated by '|||'. Input description: ${input}`;
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
