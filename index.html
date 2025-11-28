@@ -132,30 +132,51 @@
                 </div>
             </section>
 
-            <!-- Image Prompt Formula (Editable & Savable) -->
+            <!-- Image Prompt Builder -->
             <section>
                 <h2 class="serif text-xl mb-4 italic text-gray-800 flex items-center">
-                    <i data-lucide="image" class="w-4 h-4 mr-2 text-dusty-pink"></i> Image Master Formula
+                    <i data-lucide="image" class="w-4 h-4 mr-2 text-dusty-pink"></i> Image Prompt Builder
                 </h2>
-                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <div class="flex justify-between items-center mb-2">
-                        <p class="text-xs text-gray-400 uppercase tracking-wider">Editable Formula</p>
-                        <button onclick="resetFormula()" class="text-[10px] text-gray-400 underline hover:text-red-400">Reset to Default</button>
-                    </div>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
                     
-                    <!-- Editable Textarea -->
-                    <textarea id="master-prompt" 
-                        class="w-full h-24 bg-white border border-gray-200 rounded p-3 text-sm text-gray-600 font-mono focus:outline-none focus:border-[#C5A0A0] transition-colors resize-none mb-3 leading-relaxed"
-                        placeholder="프롬프트 공통 설정값을 입력하세요..."></textarea>
-                    
-                    <div class="flex gap-2">
-                        <button onclick="saveFormula()" class="flex-1 py-2 bg-gray-800 text-white text-xs rounded hover:bg-gray-700 transition-colors shadow-sm flex justify-center items-center">
-                            <i data-lucide="save" class="w-3 h-3 mr-1"></i> Save
-                        </button>
-                        <button onclick="copyFormula()" class="flex-1 py-2 bg-white border border-gray-200 text-gray-500 text-xs rounded hover:text-dusty-pink hover:border-dusty-pink transition-colors flex justify-center items-center">
-                            <i data-lucide="copy" class="w-3 h-3 mr-1"></i> Copy
-                        </button>
+                    <!-- 1. Subject Input -->
+                    <div>
+                        <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Step 1. Subject (원하는 주제)</label>
+                        <input type="text" id="prompt-subject" 
+                            class="w-full bg-white border border-gray-200 rounded p-3 text-sm text-gray-800 focus:outline-none focus:border-[#C5A0A0] transition-colors placeholder-gray-300"
+                            placeholder="예: 토슈즈가 놓인 의자, 거울 셀카 (영문 추천)" oninput="updatePromptPreview()">
                     </div>
+
+                    <!-- 2. Style Formula (Editable) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-[10px] text-gray-400 uppercase tracking-wider">Step 2. Style Formula (스타일 고정값)</label>
+                            <button onclick="resetFormula()" class="text-[10px] text-gray-400 underline hover:text-red-400">Reset Default</button>
+                        </div>
+                        <textarea id="master-prompt" 
+                            class="w-full h-24 bg-white border border-gray-200 rounded p-3 text-xs text-gray-500 font-mono focus:outline-none focus:border-[#C5A0A0] transition-colors resize-none leading-relaxed"
+                            oninput="updatePromptPreview()"
+                            placeholder="스타일 프롬프트..."></textarea>
+                        <div class="flex justify-end mt-1">
+                             <button onclick="saveFormula()" class="text-[10px] text-dusty-pink hover:text-gray-600 flex items-center py-1 px-2 rounded hover:bg-gray-100 transition-colors">
+                                <i data-lucide="save" class="w-3 h-3 mr-1"></i> Save Formula
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Full Prompt Output -->
+                    <div class="pt-2 border-t border-gray-200">
+                        <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-2">Final Prompt (클릭해서 복사)</label>
+                        <div class="relative bg-gray-800 rounded-lg p-4 group cursor-pointer hover:bg-gray-700 transition-colors" onclick="copyFullPrompt()">
+                            <p id="full-prompt-preview" class="text-sm text-gray-300 font-mono break-all leading-relaxed">
+                                <span class="text-gray-500 italic">주제를 입력하면 여기에 완성된 프롬프트가 표시됩니다...</span>
+                            </p>
+                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="bg-white text-gray-800 text-[10px] px-2 py-1 rounded font-bold shadow-md">Copy</span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
         </div>
@@ -183,9 +204,13 @@
                         키가 없으면 내장된 랜덤 템플릿이 작동합니다.<br>
                         <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-dusty-pink underline hover:text-gray-600">Google AI Studio에서 키 발급받기 →</a>
                     </div>
-                    <input type="password" id="userApiKey" placeholder="AI..." 
-                        class="w-full bg-gray-50 border border-gray-200 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#C5A0A0] transition-colors">
-                    <button onclick="saveApiKey()" class="mt-2 w-full py-2 bg-gray-800 text-white text-xs rounded hover:bg-gray-700 transition-colors shadow-sm">Save</button>
+                    <div class="flex gap-2">
+                        <input type="password" id="userApiKey" placeholder="AI..." 
+                            class="flex-1 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#C5A0A0] transition-colors">
+                        <button onclick="saveApiKey()" class="px-4 bg-gray-800 text-white text-xs rounded hover:bg-gray-700 transition-colors shadow-sm whitespace-nowrap">
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -242,18 +267,14 @@
         <div id="content-grid" class="hidden p-8 space-y-8 animate-fade-in">
             <div class="text-center space-y-2 mb-8">
                 <h2 class="serif text-2xl italic text-gray-800">Grid Planner</h2>
-                <p class="text-xs text-gray-400 font-light">Plan your aesthetic feed. Add blocks & Delete with ❌</p>
+                <p class="text-xs text-gray-400 font-light">Plan your aesthetic feed. Click blocks to delete.</p>
             </div>
 
-            <!-- Feed Formula Tips -->
+            <!-- Feed Formula Tips (Moved Up) -->
             <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 mb-8">
                 <h3 class="serif text-sm italic text-gray-800 flex items-center mb-3">
                     <i data-lucide="lightbulb" class="w-3 h-3 mr-2 text-dusty-pink"></i> Feed Formula
                 </h3>
-                <p class="text-[11px] text-gray-500 mb-4 leading-relaxed">
-                    AI 티가 나지 않게 하려면 <strong>'사람 - 사물 - 풍경'</strong>을 적절히 섞어야 합니다.
-                </p>
-                
                 <div class="grid grid-cols-3 gap-2 text-center mb-4">
                     <div class="space-y-1">
                         <div class="text-[10px] font-medium text-gray-600">Look</div>
@@ -261,18 +282,16 @@
                     </div>
                     <div class="space-y-1">
                         <div class="text-[10px] font-medium text-dusty-pink">Detail</div>
-                        <div class="text-[9px] text-gray-400">토슈즈 / 리본<br>니트 질감 확대</div>
+                        <div class="text-[9px] text-gray-400">토슈즈 / 리본<br>레이스 질감 확대</div>
                     </div>
                     <div class="space-y-1">
                         <div class="text-[10px] font-medium text-gray-500">Space</div>
-                        <div class="text-[9px] text-gray-400">햇살 든 창가<br>침대 위 옷가지</div>
+                        <div class="text-[9px] text-gray-400">햇살 든 창가<br>빈티지 소품</div>
                     </div>
                 </div>
-
                 <div class="bg-white p-3 rounded border border-gray-100 text-[10px] text-gray-500 leading-relaxed">
                     <strong class="text-dusty-pink">Color Tip:</strong><br>
-                    핑크색이 너무 많으면 촌스러울 수 있습니다.<br>
-                    중간중간 <strong>'흰색/크림색/회색'</strong> 비중이 높은 이미지를 섞어주세요.
+                    더스티 핑크 대신 <strong class="text-gray-700">빈티지 베이비 핑크</strong>와 <strong class="text-gray-700">크림</strong>색을 사용하세요.
                 </div>
             </div>
 
@@ -422,7 +441,8 @@
         function loadApiKey() {
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
             if (savedKey) {
-                document.getElementById('userApiKey').value = savedKey;
+                const input = document.getElementById('userApiKey');
+                if(input) input.value = savedKey;
             }
         }
 
@@ -437,30 +457,78 @@
         }
 
         // --- Image Formula Storage Logic ---
-        const DEFAULT_FORMULA = ", soft baby pink and vintage cream color palette, coquette balletcore aesthetic, dreamy and hazy atmosphere, soft natural lighting, nostalgic and romantic mood, delicate textures of satin and lace, pinterest style photography, --ar 4:5 --stylize 250";
+        // UPDATED: Based on user feedback for vintage/lace/dried rose mood
+        const DEFAULT_FORMULA = ", muted dusty pink and vintage cream color palette, coquette balletcore aesthetic, soft diffused lighting, subtle film grain, soft motion blur, nostalgic and romantic mood, delicate textures of satin, lace, and dried roses, pinterest style photography, --ar 4:5 --stylize 250";
         const FORMULA_STORAGE_KEY = 'dearToeFormula';
 
         function loadFormula() {
             const saved = localStorage.getItem(FORMULA_STORAGE_KEY);
-            document.getElementById('master-prompt').value = saved || DEFAULT_FORMULA;
+            const masterPrompt = document.getElementById('master-prompt');
+            if(masterPrompt) {
+                masterPrompt.value = saved || DEFAULT_FORMULA;
+                updatePromptPreview();
+            }
         }
 
         function saveFormula() {
-            const current = document.getElementById('master-prompt').value;
+            const masterPrompt = document.getElementById('master-prompt');
+            if(!masterPrompt) return;
+            const current = masterPrompt.value;
             localStorage.setItem(FORMULA_STORAGE_KEY, current);
             showToast("Formula Saved");
+            updatePromptPreview();
         }
 
         function copyFormula() {
-            const text = document.getElementById('master-prompt').value;
-            copyToClipboard(text);
+            const masterPrompt = document.getElementById('master-prompt');
+            if(!masterPrompt) return;
+            copyToClipboard(masterPrompt.value);
         }
 
         function resetFormula() {
             if(confirm("기본 설정값으로 되돌리시겠습니까?")) {
-                document.getElementById('master-prompt').value = DEFAULT_FORMULA;
+                const masterPrompt = document.getElementById('master-prompt');
+                if(!masterPrompt) return;
+                masterPrompt.value = DEFAULT_FORMULA;
                 saveFormula();
             }
+        }
+
+        // --- Prompt Builder Logic ---
+        function updatePromptPreview() {
+            const subjectEl = document.getElementById('prompt-subject');
+            const formulaEl = document.getElementById('master-prompt');
+            const previewEl = document.getElementById('full-prompt-preview');
+            
+            if (!subjectEl || !formulaEl || !previewEl) return;
+
+            const subject = subjectEl.value.trim();
+            const formula = formulaEl.value.trim();
+            
+            if (!subject) {
+                previewEl.innerHTML = `<span class="text-gray-500 italic">주제를 입력하면 여기에 완성된 프롬프트가 표시됩니다...</span>`;
+                return;
+            }
+            
+            let combined = subject;
+            if (formula) {
+                if (!subject.endsWith(',') && !formula.startsWith(',')) {
+                    combined += ", ";
+                }
+                combined += formula;
+            }
+            
+            previewEl.innerText = combined;
+        }
+
+        function copyFullPrompt() {
+            const previewEl = document.getElementById('full-prompt-preview');
+            if(!previewEl) return;
+            if (previewEl.querySelector('span')) {
+                alert("주제를 먼저 입력해주세요!");
+                return;
+            }
+            copyToClipboard(previewEl.innerText);
         }
 
         // --- Aesthetic Font Logic ---
@@ -477,8 +545,8 @@
         }
 
         function applyStyle(text) {
-            const useAesthetic = document.getElementById('aestheticFont').checked;
-            if (!useAesthetic) return text;
+            const aestheticCheckbox = document.getElementById('aestheticFont');
+            if (!aestheticCheckbox || !aestheticCheckbox.checked) return text;
             return text.split(/(\s+)/).map(word => {
                 if (word.startsWith('#')) return word;
                 return toAestheticFont(word);
@@ -525,27 +593,29 @@
             
             const subtitles = {
                 'look': [
-                    "전신 (얼굴X)", "반신 (거울 셀카)", "뒷모습 (등 라인)", "앉아있는 포즈", "스트레칭 (다리)", 
-                    "손끝 디테일", "목선/쇄골 라인", "발레 bun 헤어", "발레바 잡고", "플리에 동작"
+                    "가녀린 어깨선", "튜튜 실루엣", "거울 속 포즈", "등 근육 라인", "발끝 포인", 
+                    "무릎 위 쉬폰", "번헤어 뒷모습", "루즈한 워머", "손끝 연기", "그림자 춤",
+                    "연습복 코디", "가벼운 턴", "스트레칭", "우아한 넥라인", "가녀린 팔"
                 ],
                 'detail': [
-                    "토슈즈 (리본 묶기)", "새틴 질감 확대", "발레 스커트 (튤)", "레오타드 끈 디테일", 
-                    "니트 워머 주름", "벗어둔 토슈즈", "악세사리 (진주/리본)", "쉬폰 소재감", 
-                    "토슈즈 끈 풀린", "땀방울 디테일"
+                    "토슈즈 리본", "새틴 광택", "레이스 디테일", "진주 목걸이", "낡은 토슈즈", 
+                    "마른 장미", "쉬폰 주름", "토슈즈 끈 풀기", "땀방울", "반짝이는 큐빅",
+                    "리본 묶기", "발레 타이즈", "코르셋 디테일", "하얀 깃털", "반지"
                 ],
                 'space': [
-                    "햇살 든 연습실", "나무 바닥/플로어", "창가 커튼", "침대 위 옷가지", "발레바 (Barre)", 
-                    "거울 속 풍경", "빈 의자", "꽃병과 빛", "토슈즈 가방", "연습실 구석"
+                    "햇살 가득 창가", "빈 연습실", "나무 바닥", "놓여진 튜튜", "창밖 풍경", 
+                    "오후 4시의 빛", "엔틱 가구", "거울 앞", "커튼 사이 빛", "정리된 옷가지",
+                    "토슈즈 가방", "꽃병", "오래된 악보", "먼지 쌓인 창", "따뜻한 조명"
                 ]
             };
 
             const pool = subtitles[type] || [];
-            const randomSubtitle = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : "";
+            const randomSubtitle = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : type.toUpperCase();
 
             const newItem = {
                 id: Date.now(),
                 type: type,
-                subtitle: randomSubtitle,
+                subtitle: randomSubtitle, 
                 timestamp: new Date().toISOString()
             };
             grid.unshift(newItem);
@@ -591,18 +661,17 @@
             }
 
             container.innerHTML = grid.map(item => {
-                let icon, bgColor, label;
+                let icon, bgColor;
                 switch(item.type) {
-                    case 'look': icon = 'user'; bgColor = 'bg-white'; label = 'Look'; break;
-                    case 'detail': icon = 'sparkles'; bgColor = 'bg-[#E8D3D3]/20'; label = 'Detail'; break;
-                    case 'space': icon = 'sun'; bgColor = 'bg-gray-50'; label = 'Space'; break;
+                    case 'look': icon = 'user'; bgColor = 'bg-white'; break;
+                    case 'detail': icon = 'sparkles'; bgColor = 'bg-[#E8D3D3]/20'; break;
+                    case 'space': icon = 'sun'; bgColor = 'bg-gray-50'; break;
                 }
                 
                 return `
                     <div class="relative aspect-[4/5] ${bgColor} border border-gray-100 flex flex-col items-center justify-center group cursor-pointer grid-item-enter hover:opacity-90 transition-opacity" onclick="removeGridItem(${item.id})">
                         <i data-lucide="${icon}" class="w-4 h-4 text-gray-400 mb-1"></i>
-                        <span class="text-[9px] text-gray-500 font-medium uppercase tracking-wider">${label}</span>
-                        <span class="text-[8px] text-gray-400 mt-1">${item.subtitle || ''}</span>
+                        <span class="text-[10px] text-gray-600 font-medium text-center px-1 break-keep">${item.subtitle}</span>
                     </div>
                 `;
             }).join('');
@@ -626,7 +695,6 @@
                 const phrases = ["En pointe.", "오후의 볕.", "Grand Plié.", "취향의 조각.", "Port de bras.", "가볍게.", "Tendu.", "Arabesque line.", "Satin mood.", "공기 같은 튤.", "Ethereal.", "나만의 호흡.", "우아한 정적.", "Silhouette.", "Adagio."];
                 const phrase = phrases[Math.floor(Math.random() * phrases.length)];
                 
-                // Only output the phrase/vibe, NOT the input text
                 const raw1 = phrase;
                 const raw2 = `담백하게.`;
                 const raw3 = `중심.`;
@@ -678,7 +746,7 @@
 
         async function handleGenerate() {
             const input = document.getElementById('userInput').value.trim();
-            const apiKey = document.getElementById('userApiKey').value.trim();
+            const apiKey = document.getElementById('userApiKey') ? document.getElementById('userApiKey').value.trim() : '';
             const btn = document.getElementById('generateBtn');
             const resultArea = document.getElementById('resultArea');
             
