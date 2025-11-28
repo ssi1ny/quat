@@ -113,8 +113,8 @@
                 <div class="bg-[#FDFBF7] p-6 rounded-lg border border-gray-100 space-y-3 text-sm">
                     <p><span class="font-medium text-gray-600">Meaning:</span> 나의 발끝(Toe)에게 보내는 편지</p>
                     <p><span class="font-medium text-gray-600">Concept:</span> 발레라는 환상(Fantasy) & 로망의 시각화</p>
-                    <p><span class="font-medium text-gray-600">Persona:</span> 발레 미학 큐레이터</p>
-                    <p><span class="font-medium text-gray-600">Tone:</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Dry</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Chic</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Minimal</span></p>
+                    <p><span class="font-medium text-gray-600">Persona:</span> 로망을 수집하는 몽상가</p>
+                    <p><span class="font-medium text-gray-600">Tone:</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Romantic</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Dreamy</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Chic</span></p>
                 </div>
             </section>
 
@@ -151,7 +151,7 @@
         <div id="content-generator" class="hidden p-8 space-y-8 animate-fade-in">
             <div class="text-center space-y-2 mb-8">
                 <h2 class="serif text-2xl italic text-gray-800">Caption Maker</h2>
-                <p class="text-xs text-gray-400 font-light">Enter a keyword, get a dear.toe mood.</p>
+                <p class="text-xs text-gray-400 font-light">Enter description, get aesthetic caption only.</p>
             </div>
 
             <!-- API Key Section -->
@@ -179,22 +179,30 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Photo Situation / Keyword</label>
-                    <input type="text" id="userInput" placeholder="예: 햇살 받은 토슈즈, 연습실 거울 셀카" 
+                    <input type="text" id="userInput" placeholder="예: 발레 토슈즈 사진" 
                         class="w-full bg-[#FDFBF7] border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#C5A0A0] transition-colors placeholder-gray-300">
                 </div>
-                <div class="flex gap-4">
-                    <div class="flex-1">
-                        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Language</label>
-                        <div class="flex gap-2">
-                            <button onclick="setLanguage('ko')" id="lang-ko" class="flex-1 py-2 text-xs border border-[#C5A0A0] bg-[#E8D3D3] text-gray-700 rounded transition-colors">Korean</button>
-                            <button onclick="setLanguage('en')" id="lang-en" class="flex-1 py-2 text-xs border border-gray-200 text-gray-400 rounded hover:bg-gray-50 transition-colors">English</button>
+                
+                <div class="flex flex-col gap-4">
+                    <div class="flex gap-4 items-center">
+                        <div class="flex-1">
+                            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Language</label>
+                            <div class="flex gap-2">
+                                <button onclick="setLanguage('ko')" id="lang-ko" class="flex-1 py-2 text-xs border border-[#C5A0A0] bg-[#E8D3D3] text-gray-700 rounded transition-colors">Korean</button>
+                                <button onclick="setLanguage('en')" id="lang-en" class="flex-1 py-2 text-xs border border-gray-200 text-gray-400 rounded hover:bg-gray-50 transition-colors">English</button>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                             <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Style</label>
+                             <div class="flex items-center h-[34px]">
+                                <input type="checkbox" id="aestheticFont" class="w-4 h-4 text-dusty-pink border-gray-300 rounded focus:ring-dusty-pink" checked>
+                                <label for="aestheticFont" class="ml-2 text-xs text-gray-600 cursor-pointer select-none">✨ Aesthetic Font 적용</label>
+                             </div>
                         </div>
                     </div>
-                    <div class="flex items-end">
-                        <button onclick="handleGenerate()" id="generateBtn" class="h-[38px] px-6 bg-gray-800 text-white text-xs tracking-wider rounded hover:bg-gray-700 transition-colors shadow-sm flex items-center justify-center min-w-[100px]">
-                            GENERATE
-                        </button>
-                    </div>
+                    <button onclick="handleGenerate()" id="generateBtn" class="w-full h-[42px] bg-gray-800 text-white text-xs tracking-wider rounded hover:bg-gray-700 transition-colors shadow-sm flex items-center justify-center">
+                        GENERATE
+                    </button>
                 </div>
             </div>
 
@@ -341,19 +349,14 @@
             }
         }
 
-        // --- Clipboard Helper Function for iFrame Compatibility ---
+        // --- Clipboard Helper Function ---
         function copyToClipboard(text) {
-            // Create a temporary textarea element
             const textarea = document.createElement('textarea');
             textarea.value = text;
-            
-            // Make it invisible but part of the DOM
             textarea.style.position = 'fixed';
             textarea.style.left = '-9999px';
             textarea.style.top = '0';
             document.body.appendChild(textarea);
-            
-            // Select and copy
             textarea.focus();
             textarea.select();
             
@@ -367,8 +370,6 @@
             } catch (err) {
                 console.error('Fallback: Oops, unable to copy', err);
             }
-            
-            // Cleanup
             document.body.removeChild(textarea);
         }
 
@@ -400,9 +401,68 @@
             }
         }
 
+        // --- Aesthetic Font Logic ---
+        function toAestheticFont(text) {
+            return text.split('').map(char => {
+                const code = char.charCodeAt(0);
+                // Uppercase A-Z (U+1D434 - U+1D44D)
+                if (code >= 65 && code <= 90) {
+                    return String.fromCodePoint(0x1D434 + code - 65);
+                }
+                // Lowercase a-z (U+1D44E - U+1D467)
+                if (code >= 97 && code <= 122) {
+                    if (char === 'h') return 'ℎ'; // Special handling for 'h' (Planck constant)
+                    return String.fromCodePoint(0x1D44E + code - 97);
+                }
+                return char;
+            }).join('');
+        }
+
+        function applyStyle(text) {
+            const useAesthetic = document.getElementById('aestheticFont').checked;
+            if (!useAesthetic) return text;
+
+            // Simple parser to avoid converting hashtags
+            // 1. Split by spaces
+            return text.split(/(\s+)/).map(word => {
+                // If it starts with #, don't convert
+                if (word.startsWith('#')) return word;
+                // Otherwise convert english chars
+                return toAestheticFont(word);
+            }).join('');
+        }
+
+        // --- Aesthetic Decorations (Separated for Mix Logic) ---
+        // Expanded atoms list (30+ symbols)
+        const aestheticAtoms = [
+            "𓂃", "˖", "˳", "·", "ִֶָ", "⋆", "˚", "✧", "₊", "୨୧", "⟡", "｡", "𝜗𝜚", "⊹", "‧", "𖥔", "݁", ".", "・", "゜", "﹒", "．",
+            "⭑", "♢", "𓆩", "♡", "𓆪", "⸝", "꒰", "❣", "⁺", "꒱", "❥", "┈", "༚", "༅", "⁎", "⛧", "꙳", "⭒", "☪︎", "＊", "☾", "⟢", "🧂"
+        ];
+        
+        const balletEmojis = ["🩰", "🦢", "☁️", "🎀", "🕊️", "🤍", "🪽", "🎗️", "🗝️", "🪞", "🕯️", "🍰", "🎐", "🫧", "🧁", "🧚‍♀️", "🏹"];
+
+        function getDecoration() {
+            // 50% chance for Atoms (mixed), 50% chance for single Emoji
+            // Never mix atoms and emojis in the same block
+            if (Math.random() > 0.5) {
+                // Generate a random combination of 2-4 atoms
+                const length = Math.floor(Math.random() * 3) + 2; // 2 to 4
+                let result = "";
+                for (let i = 0; i < length; i++) {
+                    result += aestheticAtoms[Math.floor(Math.random() * aestheticAtoms.length)];
+                    // Add a space randomly for separation, but not always
+                    if (Math.random() > 0.7) result += " ";
+                }
+                return result.trim();
+            } else {
+                // Return a single random emoji
+                return balletEmojis[Math.floor(Math.random() * balletEmojis.length)];
+            }
+        }
+
         // --- Grid Planner Logic ---
         const GRID_STORAGE_KEY = 'dearToeGrid';
-        let resetTimeout; // Timeout for reset button confirmation state
+        let resetTimeout; 
         
         function getGrid() {
             const saved = localStorage.getItem(GRID_STORAGE_KEY);
@@ -417,7 +477,6 @@
         function addGridItem(type) {
             const grid = getGrid();
             
-            // Subtitle Pools (Randomized Ballet keywords)
             const subtitles = {
                 'look': ["전신 (얼굴X)", "반신 (거울)", "얼굴 없는 샷"],
                 'detail': ["토슈즈 / 리본", "니트 질감 확대"],
@@ -433,7 +492,6 @@
                 subtitle: randomSubtitle,
                 timestamp: new Date().toISOString()
             };
-            // Add to the beginning (top-left in feed)
             grid.unshift(newItem);
             saveGrid(grid);
         }
@@ -444,23 +502,16 @@
             saveGrid(newGrid);
         }
 
-        // Improved Reset Logic without confirm()
         function handleResetGrid(btn) {
             if (btn.innerText === "Confirm Reset?") {
-                // Execute Reset
                 localStorage.removeItem(GRID_STORAGE_KEY);
                 renderGrid();
-                
-                // Restore Button State
                 btn.innerText = "Reset Grid";
                 btn.classList.remove('text-red-500', 'font-bold');
                 clearTimeout(resetTimeout);
             } else {
-                // First Click: Ask for Confirmation
                 btn.innerText = "Confirm Reset?";
                 btn.classList.add('text-red-500', 'font-bold');
-                
-                // Auto revert after 3 seconds
                 resetTimeout = setTimeout(() => {
                     btn.innerText = "Reset Grid";
                     btn.classList.remove('text-red-500', 'font-bold');
@@ -508,8 +559,6 @@
                         <i data-lucide="${icon}" class="w-4 h-4 text-gray-400 mb-1"></i>
                         <span class="text-[9px] text-gray-500 font-medium uppercase tracking-wider">${label}</span>
                         <span class="text-[8px] text-gray-400 mt-1">${item.subtitle || ''}</span>
-                        
-                        <!-- Explicit Delete Button (Top-Right) -->
                         <div onclick="removeGridItem(${item.id}); event.stopPropagation();" 
                              class="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-white/80 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50">
                             <i data-lucide="x" class="w-3 h-3 text-red-400"></i>
@@ -533,6 +582,73 @@
             const shuffled = tagPool.sort(() => 0.5 - Math.random());
             const selected = shuffled.slice(0, 4);
             return `${baseTags} ${selected.join(' ')}`;
+        }
+
+        function generateWithTemplate(input) {
+            const tags = getRandomTags();
+            let opt1, opt2, opt3;
+
+            // Updated Phrases with Ballet Terms & Mood Board words
+            if (currentLang === 'ko') {
+                const phrases = [
+                    "En pointe.", "오후의 볕.", "Grand Plié.", "취향의 조각.", "Port de bras.", 
+                    "가볍게.", "Tendu.", "Arabesque line.", "Satin mood.", "공기 같은 튤.", 
+                    "Ethereal.", "나만의 호흡.", "우아한 정적.", "Silhouette.", "Adagio."
+                ];
+                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+                
+                const raw1 = phrase;
+                const raw2 = `담백하게.`;
+                const raw3 = `중심.`;
+
+                opt1 = `${applyStyle(raw1)} ${getDecoration()}\n.\n${tags}`;
+                opt2 = `${applyStyle(raw2)} ${getDecoration()}\n.\n${tags}`;
+                opt3 = `${applyStyle(raw3)} ${getDecoration()}\n.\n${tags}`;
+            } else {
+                const phrases = [
+                    "Soft layers.", "En pointe.", "Silence.", "Mood.", "Grand Plié.", 
+                    "Morning light.", "Pure lines.", "Tendu.", "Satin mood.", "Ethereal.", 
+                    "Tulle dreams.", "Graceful.", "Adagio.", "Swan lake.", "Ballerina soul."
+                ];
+                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+                
+                const raw1 = phrase;
+                const raw2 = `Satin mood.`;
+                const raw3 = `Attitude.`;
+
+                opt1 = `${applyStyle(raw1)} ${getDecoration()}\n.\n${tags}`;
+                opt2 = `${applyStyle(raw2)} ${getDecoration()}\n.\n${tags}`;
+                opt3 = `${applyStyle(raw3)} ${getDecoration()}\n.\n${tags}`;
+            }
+
+            document.getElementById('result1').innerText = opt1;
+            document.getElementById('result2').innerText = opt2;
+            document.getElementById('result3').innerText = opt3;
+        }
+
+        async function generateWithAI(input, apiKey) {
+            const langInstruction = currentLang === 'ko' ? "Use Korean." : "Use English.";
+            // Updated Prompt with strict aesthetic instructions
+            const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. Tone: Dry, Chic, Minimalist but dreamy. Rules: Use 1-2 emojis (e.g. 🩰, 🦢, ☁️, 🎀, 🪽) OR 1-2 aesthetic symbols (e.g. 𖥔, ݁, ˖, ˳, 𓂃, 𝜗𝜚, 𓆩♡𓆪, ☪︎). STRICT RULE: Do NOT mix standard emojis with aesthetic symbols in the same caption. Use ONE type or the other. Short (2-3 lines). No greetings. ${langInstruction}. STRICT RULE: Do NOT mix languages in the caption text. Use proper ballet terminology (e.g., Plié, Tendu, Arabesque, Pointe, Satin, Ribbon, Tulle, Ethereal, Adagio, Silhouette) instead of generic words like 'dance' or 'shoes'. IMPORTANT: Do NOT repeat the user's input description in the output. Use it only as context to generate a mood/keyword. (Hashtags are handled separately, so just generate the text). Provide 3 distinct options separated by '|||'. Input description: ${input}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: `${systemPrompt}\n\nGenerate 3 options.` }] }] })
+            });
+
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+
+            const rawText = data.candidates[0].content.parts[0].text;
+            const options = rawText.split('|||');
+            const tags = getRandomTags();
+            const clean = (text) => text ? text.replace(/\*\*/g, '').trim() : "AI Error";
+
+            document.getElementById('result1').innerText = applyStyle(clean(options[0])) + `\n.\n${tags}`;
+            document.getElementById('result2').innerText = applyStyle(clean(options[1] || options[0])) + `\n.\n${tags}`;
+            document.getElementById('result3').innerText = applyStyle(clean(options[2] || options[0])) + `\n.\n${tags}`;
         }
 
         async function handleGenerate() {
@@ -563,53 +679,6 @@
                 btn.innerHTML = 'GENERATE';
                 btn.disabled = false;
             }
-        }
-
-        function generateWithTemplate(input) {
-            const tags = getRandomTags();
-            let opt1, opt2, opt3;
-
-            if (currentLang === 'ko') {
-                const phrases = ["오후의 볕.", "정돈된 시간.", "취향의 조각.", "무드.", "가볍게.", "좋아하는 선.", "기록."];
-                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-                opt1 = `${input}. ${phrase}\n.\n${tags}`;
-                opt2 = `담백하게. ${input}.\n.\n${tags}`;
-                opt3 = `${input}. My balance.\n.\n${tags}`;
-            } else {
-                const phrases = ["Soft layers.", "Just breathing.", "Silence.", "Mood.", "My balance.", "Morning light.", "Pure lines."];
-                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-                opt1 = `${input}. ${phrase}\n.\n${tags}`;
-                opt2 = `Details. ${input}.\n.\n${tags}`;
-                opt3 = `${phrase} ${input}.\n.\n${tags}`;
-            }
-
-            document.getElementById('result1').innerText = opt1;
-            document.getElementById('result2').innerText = opt2;
-            document.getElementById('result3').innerText = opt3;
-        }
-
-        async function generateWithAI(input, apiKey) {
-            const langInstruction = currentLang === 'ko' ? "Use Korean." : "Use English.";
-            const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. Tone: Dry, Chic, Minimalist. Rules: No emojis (max 1), Short (2-3 lines), No greetings. ${langInstruction}. Provide 3 distinct options separated by '|||'. Input: ${input}`;
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: `${systemPrompt}\n\nGenerate 3 options.` }] }] })
-            });
-
-            const data = await response.json();
-            if (data.error) throw new Error(data.error.message);
-
-            const rawText = data.candidates[0].content.parts[0].text;
-            const options = rawText.split('|||');
-            const tags = getRandomTags();
-            const clean = (text) => text ? text.replace(/\*\*/g, '').trim() : "AI Error";
-
-            document.getElementById('result1').innerText = clean(options[0]) + `\n.\n${tags}`;
-            document.getElementById('result2').innerText = clean(options[1] || options[0]) + `\n.\n${tags}`;
-            document.getElementById('result3').innerText = clean(options[2] || options[0]) + `\n.\n${tags}`;
         }
 
         document.getElementById('userInput').addEventListener('keypress', function (e) {
