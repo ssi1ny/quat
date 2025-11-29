@@ -118,6 +118,19 @@
                 </div>
             </section>
 
+            <!-- Bio Options -->
+            <section>
+                <h2 class="serif text-xl mb-4 italic text-gray-800 flex items-center">
+                    <i data-lucide="user" class="w-4 h-4 mr-2 text-dusty-pink"></i> Bio
+                </h2>
+                <div class="grid gap-4 text-sm">
+                    <!-- Option A (Confirmed) -->
+                    <div class="group relative border border-gray-100 rounded-lg p-4 hover:border-[#E8D3D3] transition-colors cursor-pointer" onclick="copyText(this, 'bio1')">
+                        <p id="bio1" class="text-gray-600 leading-relaxed text-center">발레 | 무드 | 아카이브 🦢<br>* . ˚ 🩰 * . *</p>
+                        <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-xs text-dusty-pink transition-opacity">Click to Copy</span>
+                    </div>
+                </div>
+            </section>
 
             <!-- Image Prompt Builder -->
             <section class="mt-8">
@@ -262,7 +275,7 @@
                 <h2 class="serif text-2xl italic text-gray-800">Grid Planner</h2>
             </div>
 
-            <!-- Feed Formula Tips (Moved Up) -->
+            <!-- Feed Formula Tips -->
             <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 mb-8">
                 <h3 class="serif text-sm italic text-gray-800 flex items-center mb-3">
                     <i data-lucide="lightbulb" class="w-3 h-3 mr-2 text-dusty-pink"></i> Feed Formula
@@ -681,7 +694,7 @@
             const subtitles = {
                 'look': [
                     "전신 (얼굴X)", "반신 (거울 셀카)", "뒷모습 (등 라인)", "고전 명화풍 발레리나", "빈티지 발레 사진", 
-                    "드가(Degas) 스타일", "무대 뒤 스냅", "발레바 잡고", "플리에 동작", "우아한 넥라인"
+                    "드가(Degas) 스타일", "무대 뒤 스냅", "발레바 잡고", "플리에 (Plié)", "바뜨망 (Battement)", "아라베스크 (Arabesque)", "에티튜드 (Attitude)", "앙바/아나방 (Port de bras)", "쉐네 (Chaînés)", "우아한 넥라인"
                 ],
                 'detail': [
                     "토슈즈 앞코 확대", "토슈즈 신은 발끝", "리본 묶는 손", "발레 서적 (동작 그림)", "펼쳐진 옛날 악보",
@@ -782,38 +795,33 @@
             let opt1, opt2, opt3;
 
             if (currentLang === 'ko') {
-                // Revised Korean Template (v13.0) - Casual Diary Style
-                const phrases = [
-                    "오늘 수업 너무 힘들었다...💦", 
-                    "이 레오타드 색감 미쳤다 🎀", 
-                    "폴드브라랑 시선 처리가 제일 어려워..", 
-                    "내 최애 토슈즈 🩰", 
-                    "장비빨이라도 세워보자..✨", 
-                    "선생님처럼 예쁘게 하고 싶은데 몸이 안 따라주네..",
-                    "오늘도 발레하길 잘했다 🦢",
-                    "핑크는 언제나 옳다..💖",
-                    "발레는 역시 장비빨..?",
-                    "턴아웃이 제일 어려워 🥲"
-                ];
+                const phrases = ["가장 나다워지는 시간.", "완벽한 아라베스크를 위해.", "발레가 주는 위로.", "오늘의 무드.", "호흡을 가다듬고.", "우아함의 조각.", "나만의 리듬.", "꿈꾸는 발레리나.", "연습실의 고요함이 좋다.", "Pas de deux.", "Reverence.", "Adagio.", "Glimmer.", "Hazy mood.", "Silhouette."];
                 const phrase = phrases[Math.floor(Math.random() * phrases.length)];
                 
                 const raw1 = phrase; 
-                const raw2 = `내 최애 발레코어들...🩶`;
-                const raw3 = `폴드브라랑 플리에랑 어떻게 같이 하는거지..?`;
+                const raw2 = `이 순간의 우아함`;
+                const raw3 = `꿈꾸던 장면`;
 
-                // No decoration for Korean template (text itself has emojis)
-                opt1 = `${raw1}\n.\n${tags}`;
-                opt2 = `${raw2}\n.\n${tags}`;
-                opt3 = `${raw3}\n.\n${tags}`;
+                // Korean: No Atoms, Optional Emoji Only (50% chance)
+                const getKoDeco = () => Math.random() > 0.5 ? " " + balletEmojis[Math.floor(Math.random() * balletEmojis.length)] : "";
+
+                opt1 = `${raw1}${getKoDeco()}\n.\n${tags}`;
+                opt2 = `${raw2}${getKoDeco()}\n.\n${tags}`;
+                opt3 = `${raw3}${getKoDeco()}\n.\n${tags}`;
             } else {
-                // Keep English Template as is (Short/Chic)
-                const phrases = ["Soft layers", "En pointe", "Silence", "Mood", "Grand Plié", "Morning light", "Pure lines", "Tendu", "Satin mood", "Ethereal", "Tulle dreams", "Graceful", "Adagio", "Swan lake", "Ballerina soul"];
+                // English: Expanded Phrases (v15.0)
+                const phrases = [
+                    "Soft layers", "En pointe", "Silence", "Mood", "Grand Plié", "Morning light", "Pure lines", "Tendu", "Satin mood", "Ethereal", "Tulle dreams", "Graceful", "Adagio", "Swan lake", "Ballerina soul", 
+                    "Swan Lake", "Giselle", "The Nutcracker", "Sleeping Beauty", "Coppélia", "Don Quixote", 
+                    "Grand Jeté", "Pirouette", "Adagio", "Arabesque", "Attitude", "Plié", "Tendu"
+                ];
                 const phrase = phrases[Math.floor(Math.random() * phrases.length)];
                 
                 const raw1 = phrase;
                 const raw2 = `Satin mood`;
                 const raw3 = `Attitude`;
 
+                // English gets fancy decorations (Advanced)
                 opt1 = `${applyAdvancedDecoration(applyStyle(raw1))}\n.\n${tags}`;
                 opt2 = `${applyAdvancedDecoration(applyStyle(raw2))}\n.\n${tags}`;
                 opt3 = `${applyAdvancedDecoration(applyStyle(raw3))}\n.\n${tags}`;
@@ -826,23 +834,11 @@
 
         async function generateWithAI(input, apiKey) {
             const langInstruction = currentLang === 'ko' ? "Use Korean." : "Use English.";
-            // REVISED Prompt (v13.0) - Casual Diary vs Chic Short
-            const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. 
+            const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. Tone: Dry, Chic, Minimalist but dreamy. Rules: Decorations (emojis/symbols) are optional. Add them randomly (about 50% chance). Short (2-3 lines). No greetings. ${langInstruction}. STRICT RULE: Do NOT mix languages in the caption text. For both Korean and English captions, do NOT use a period (.) at the end. 
             
-            [Language & Style Rules]
-            1. **Korean Captions:** - STRICTLY Korean only. NO English words in main text.
-               - **Tone:** Casual diary style, cute, honest, like a Twitter post. 
-               - Content: Express difficulties in ballet class (e.g., "How do I do port de bras and plie together..?"), showing affection for items ("My favorite balletcore items...🩶"), or simple daily thoughts about ballet. Use "..." or ".." effectively.
-               - Emojis are okay to use naturally within the text (e.g. 🩶, 🩰, 💦, ✨).
-               - **NO special aesthetic atoms** (like 𖥔, 𝜗𝜚).
-               - Do NOT use formal language. Be conversational.
+            For Korean captions: Focus on expressing "why I love ballet" or "why this specific moment is beautiful". Use subjective, emotional language (e.g., "The comfort of the studio air", "Striving for the perfect line", "This moment of silence"). Actively mix in ballet terminology (e.g., Plié, Tendu, Arabesque, Adagio, Reverence) or aesthetic keywords (e.g., Satin, Tulle, Hazy, Glimmer) even in Korean text context to sound professional and chic. Avoid generic descriptions.
             
-            2. **English Captions:**
-               - Short words or fragments (e.g., "Satin mood", "Morning light"). NO full sentences.
-               - Do NOT use a period (.) at the end.
-               - Decoration: The system will add aesthetic symbols, so just provide the text.
-
-            IMPORTANT: Do NOT repeat the user's input description. Provide 3 distinct options separated by '|||'. Input: ${input}`;
+            IMPORTANT: Do NOT repeat the user's input description in the output. Use it only as context. Provide 3 distinct options separated by '|||'. Input description: ${input}`;
             
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
@@ -861,20 +857,16 @@
             
             const processOption = (text) => {
                 let cleanText = text ? text.replace(/\*\*/g, '').trim() : "AI Error";
+                if (cleanText.endsWith('.')) cleanText = cleanText.slice(0, -1);
                 
-                if (currentLang === 'ko') {
-                    // Korean: Just return the text (it might have emojis from AI already)
-                    // Ensure no English if possible
-                    return cleanText;
+                const styledText = applyStyle(cleanText);
+                
+                // Apply advanced decoration randomly
+                if (Math.random() < 0.7) {
+                    return applyAdvancedDecoration(styledText);
                 } else {
-                    // English: Aesthetic Font + Decoration
-                     if (cleanText.endsWith('.')) cleanText = cleanText.slice(0, -1);
-                    const styledText = applyStyle(cleanText);
-                    if (Math.random() < 0.5) {
-                        return applyAdvancedDecoration(styledText); 
-                    } else {
-                        return `${styledText} ${getDecoration()}`; 
-                    }
+                    const randomEmoji = balletEmojis[Math.floor(Math.random() * balletEmojis.length)];
+                    return `${styledText} ${randomEmoji}`;
                 }
             };
 
