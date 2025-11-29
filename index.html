@@ -118,19 +118,6 @@
                 </div>
             </section>
 
-            <!-- Bio Options -->
-            <section>
-                <h2 class="serif text-xl mb-4 italic text-gray-800 flex items-center">
-                    <i data-lucide="user" class="w-4 h-4 mr-2 text-dusty-pink"></i> Bio
-                </h2>
-                <div class="grid gap-4 text-sm">
-                    <!-- Option A (Confirmed) -->
-                    <div class="group relative border border-gray-100 rounded-lg p-4 hover:border-[#E8D3D3] transition-colors cursor-pointer" onclick="copyText(this, 'bio1')">
-                        <p id="bio1" class="text-gray-600 leading-relaxed text-center">발레 | 무드 | 아카이브 🦢<br>* . ˚ 🩰 * . *</p>
-                        <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-xs text-dusty-pink transition-opacity">Click to Copy</span>
-                    </div>
-                </div>
-            </section>
 
             <!-- Image Prompt Builder -->
             <section class="mt-8">
@@ -199,7 +186,7 @@
                     <span class="flex items-center text-xs text-gray-500">
                         <i data-lucide="key" class="w-3 h-3 mr-2"></i> Google Gemini API 설정
                     </span>
-                    <!-- Toggle Switch (ON by default) -->
+                    <!-- Toggle Switch (Off by default) -->
                     <button id="apiToggleBtn" onclick="toggleApiState()" class="w-8 h-4 rounded-full bg-[#C5A0A0] relative transition-colors focus:outline-none">
                         <div id="apiToggleCircle" class="w-3 h-3 rounded-full bg-white shadow-sm absolute top-0.5 left-0.5 transition-transform translate-x-4"></div>
                     </button>
