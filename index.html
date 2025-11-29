@@ -118,7 +118,7 @@
                 </div>
             </section>
 
-           
+  
 
             <!-- Image Prompt Builder -->
             <section class="mt-8">
@@ -181,7 +181,7 @@
                 <p class="text-xs text-gray-400 font-light">Enter description, get aesthetic caption only.</p>
             </div>
 
-            <!-- API Key Section (Default: OFF) -->
+            <!-- API Key Section (Always Open & Pre-filled) -->
             <div class="mb-8 border border-[#E8D3D3] rounded-lg overflow-hidden">
                 <div class="flex justify-between items-center p-3 bg-[#FDFBF7]">
                     <span class="flex items-center text-xs text-gray-500">
@@ -195,7 +195,7 @@
                 
                 <div id="apiKeySection" class="hidden bg-white p-4 border-t border-[#E8D3D3]">
                     <div class="text-[11px] text-gray-400 mb-2 mt-2 leading-relaxed">
-                        API 키를 입력하면 Gemini가 직접 글을 작성해줍니다. (OFF 시 랜덤 템플릿 사용)<br>
+                        API 키를 입력하면 Gemini가 직접 글을 작성해줍니다.<br>
                         <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-dusty-pink underline hover:text-gray-600">Google AI Studio에서 키 발급받기 →</a>
                     </div>
                     <div class="flex gap-2">
@@ -263,7 +263,7 @@
                 <h2 class="serif text-2xl italic text-gray-800">Grid Planner</h2>
             </div>
 
-            <!-- Feed Formula Tips -->
+            <!-- Feed Formula Tips (Moved Up) -->
             <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 mb-8">
                 <h3 class="serif text-sm italic text-gray-800 flex items-center mb-3">
                     <i data-lucide="lightbulb" class="w-3 h-3 mr-2 text-dusty-pink"></i> Feed Formula
@@ -460,7 +460,7 @@
                 const input = document.getElementById('userApiKey');
                 if(input) input.value = savedKey;
             }
-            // Ensure section is open if in API mode
+            // Ensure section is open if in API mode (default)
             if (isApiMode) {
                 document.getElementById('apiKeySection').classList.remove('hidden');
             }
@@ -682,7 +682,7 @@
             const subtitles = {
                 'look': [
                     "전신 (얼굴X)", "반신 (거울 셀카)", "뒷모습 (등 라인)", "고전 명화풍 발레리나", "빈티지 발레 사진", 
-                    "드가(Degas) 스타일", "무대 뒤 스냅", "발레바 잡고", "플리에 (Plié)", "바뜨망 (Battement)", "아라베스크 (Arabesque)", "에티튜드 (Attitude)", "앙바/아나방 (Port de bras)", "쉐네 (Chaînés)", "우아한 넥라인"
+                    "드가(Degas) 스타일", "무대 뒤 스냅", "발레바 잡고", "플리에 동작", "우아한 넥라인"
                 ],
                 'detail': [
                     "토슈즈 앞코 확대", "토슈즈 신은 발끝", "리본 묶는 손", "발레 서적 (동작 그림)", "펼쳐진 옛날 악보",
