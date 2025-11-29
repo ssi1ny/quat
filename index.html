@@ -193,20 +193,26 @@
                 <p class="text-xs text-gray-400 font-light">Enter description, get aesthetic caption only.</p>
             </div>
 
-            <!-- API Key Section -->
+            <!-- API Key Section with ON/OFF Switch -->
             <div class="mb-8 border border-[#E8D3D3] rounded-lg overflow-hidden">
-                <button onclick="toggleApiKeySection()" class="w-full flex justify-between items-center p-3 bg-[#FDFBF7] text-xs text-gray-500 hover:bg-[#F9F3F3] transition-colors">
-                    <span class="flex items-center"><i data-lucide="key" class="w-3 h-3 mr-2"></i> Google Gemini API Key 설정 (선택)</span>
-                    <i data-lucide="chevron-down" id="api-chevron" class="w-3 h-3 transition-transform"></i>
-                </button>
+                <div class="flex justify-between items-center p-3 bg-[#FDFBF7]">
+                    <span class="flex items-center text-xs text-gray-500">
+                        <i data-lucide="key" class="w-3 h-3 mr-2"></i> Google Gemini API 설정
+                    </span>
+                    <!-- Toggle Switch -->
+                    <button id="apiToggleBtn" onclick="toggleApiState()" class="w-8 h-4 rounded-full bg-gray-300 relative transition-colors focus:outline-none">
+                        <div id="apiToggleCircle" class="w-3 h-3 rounded-full bg-white shadow-sm absolute top-0.5 left-0.5 transition-transform"></div>
+                    </button>
+                </div>
+                
+                <!-- Collapsible Content -->
                 <div id="apiKeySection" class="hidden bg-white p-4 border-t border-[#E8D3D3]">
                     <div class="text-[11px] text-gray-400 mb-2 leading-relaxed bg-yellow-50 p-2 rounded text-yellow-800 border border-yellow-100">
                         ⚠️ <strong>주의:</strong> 학교나 회사 계정은 보안 문제로 생성 오류가 날 수 있습니다.<br>
                         오류 발생 시 <strong>'개인 구글 계정(@gmail.com)'</strong>으로 로그인해서 시도해주세요.
                     </div>
                     <div class="text-[11px] text-gray-400 mb-2 mt-2 leading-relaxed">
-                        API 키를 입력하면 Gemini가 직접 글을 작성해줍니다.<br>
-                        키가 없으면 내장된 랜덤 템플릿이 작동합니다.<br>
+                        API 키를 입력하면 Gemini가 직접 글을 작성해줍니다. (OFF 시 랜덤 템플릿 사용)<br>
                         <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-dusty-pink underline hover:text-gray-600">Google AI Studio에서 키 발급받기 →</a>
                     </div>
                     <div class="flex gap-2">
@@ -349,13 +355,14 @@
                 loadFormula();
                 // Load grid
                 renderGrid(); 
-                // Load Saved API Key
+                // Load Saved API Key and set Toggle State
                 loadApiKey();
             }
         });
 
         // --- Common State & Functions ---
         let currentLang = 'ko';
+        let isApiMode = false; // Default to Template Mode
 
         function switchTab(tabName) {
             const tabs = ['guide', 'generator', 'grid'];
@@ -428,15 +435,25 @@
             setTimeout(() => toast.classList.add('opacity-0'), 2000);
         }
 
-        function toggleApiKeySection() {
+        // --- API Toggle Switch Logic ---
+        function toggleApiState() {
+            isApiMode = !isApiMode;
+            const btn = document.getElementById('apiToggleBtn');
+            const circle = document.getElementById('apiToggleCircle');
             const section = document.getElementById('apiKeySection');
-            const chevron = document.getElementById('api-chevron');
-            if (section.classList.contains('hidden')) {
+
+            if (isApiMode) {
+                // ON state
+                btn.classList.remove('bg-gray-300');
+                btn.classList.add('bg-[#C5A0A0]'); // Warm pink
+                circle.classList.add('translate-x-4');
                 section.classList.remove('hidden');
-                chevron.classList.add('rotate-180');
             } else {
+                // OFF state
+                btn.classList.remove('bg-[#C5A0A0]');
+                btn.classList.add('bg-gray-300');
+                circle.classList.remove('translate-x-4');
                 section.classList.add('hidden');
-                chevron.classList.remove('rotate-180');
             }
         }
 
@@ -468,9 +485,6 @@
 
         function loadFormula() {
             const saved = localStorage.getItem(FORMULA_STORAGE_KEY);
-            // Force update to the new default if user hasn't customized it significantly, 
-            // or simply update the textarea value directly to reflect the user's specific request immediately.
-            // For this interaction, we overwrite to show the requested change.
             const masterPrompt = document.getElementById('master-prompt');
             if(masterPrompt) {
                 masterPrompt.value = saved || DEFAULT_FORMULA;
@@ -548,10 +562,19 @@
                 alert("번역할 텍스트를 입력해주세요.");
                 return;
             }
+            
+            if (!isApiMode) {
+                 alert("번역 기능을 사용하려면 API 설정을 켜주세요.");
+                 // Optional: Open the section to prompt user
+                 if(document.getElementById('apiKeySection').classList.contains('hidden')) {
+                     toggleApiState();
+                 }
+                 return;
+            }
 
             const apiKey = document.getElementById('userApiKey').value.trim();
             if (!apiKey) {
-                alert("번역 기능을 사용하려면 API Key를 저장해주세요.");
+                alert("API Key가 필요합니다.");
                 return;
             }
 
@@ -812,7 +835,7 @@
 
         async function handleGenerate() {
             const input = document.getElementById('userInput').value.trim();
-            const apiKey = document.getElementById('userApiKey').value.trim();
+            const apiKey = document.getElementById('userApiKey') ? document.getElementById('userApiKey').value.trim() : '';
             const btn = document.getElementById('generateBtn');
             const resultArea = document.getElementById('resultArea');
             
@@ -825,9 +848,10 @@
             btn.disabled = true;
 
             try {
-                if (apiKey) {
+                if (isApiMode && apiKey) {
                     await generateWithAI(input, apiKey);
                 } else {
+                    // Fallback to template if API mode is off or no key
                     generateWithTemplate(input);
                 }
                 resultArea.classList.remove('hidden');
