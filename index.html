@@ -24,7 +24,7 @@
             color: #C5A0A0; /* Warm Darker Pink */
         }
         .border-dusty-pink {
-            border-color: #E8D3D3;
+            border-color: #E8D3D3; /* Restored */
         }
         .btn-hover:hover {
             background-color: #D6C0C0;
@@ -111,9 +111,8 @@
                     <i data-lucide="sparkles" class="w-4 h-4 mr-2 text-dusty-pink"></i> Identity
                 </h2>
                 <div class="bg-[#FDFBF7] p-6 rounded-lg border border-gray-100 space-y-3 text-sm">
-                    <p><span class="font-medium text-gray-600">Meaning:</span> 나의 발끝(Toe)에게 보내는 편지</p>
+                    <!-- Removed Meaning and Persona as requested -->
                     <p><span class="font-medium text-gray-600">Concept:</span> 발레라는 환상(Fantasy) & 로망의 시각화</p>
-                    <p><span class="font-medium text-gray-600">Persona:</span> 로망을 수집하는 몽상가</p>
                     <p><span class="font-medium text-gray-600">Tone:</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Romantic</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Dreamy</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-500">Chic</span></p>
                 </div>
             </section>
@@ -193,26 +192,20 @@
                 <p class="text-xs text-gray-400 font-light">Enter description, get aesthetic caption only.</p>
             </div>
 
-            <!-- API Key Section with ON/OFF Switch -->
+            <!-- API Key Section -->
             <div class="mb-8 border border-[#E8D3D3] rounded-lg overflow-hidden">
-                <div class="flex justify-between items-center p-3 bg-[#FDFBF7]">
-                    <span class="flex items-center text-xs text-gray-500">
-                        <i data-lucide="key" class="w-3 h-3 mr-2"></i> Google Gemini API 설정
-                    </span>
-                    <!-- Toggle Switch -->
-                    <button id="apiToggleBtn" onclick="toggleApiState()" class="w-8 h-4 rounded-full bg-gray-300 relative transition-colors focus:outline-none">
-                        <div id="apiToggleCircle" class="w-3 h-3 rounded-full bg-white shadow-sm absolute top-0.5 left-0.5 transition-transform"></div>
-                    </button>
-                </div>
-                
-                <!-- Collapsible Content -->
+                <button onclick="toggleApiKeySection()" class="w-full flex justify-between items-center p-3 bg-[#FDFBF7] text-xs text-gray-500 hover:bg-[#F9F3F3] transition-colors">
+                    <span class="flex items-center"><i data-lucide="key" class="w-3 h-3 mr-2"></i> Google Gemini API 설정 (선택)</span>
+                    <i data-lucide="chevron-down" id="api-chevron" class="w-3 h-3 transition-transform"></i>
+                </button>
                 <div id="apiKeySection" class="hidden bg-white p-4 border-t border-[#E8D3D3]">
                     <div class="text-[11px] text-gray-400 mb-2 leading-relaxed bg-yellow-50 p-2 rounded text-yellow-800 border border-yellow-100">
                         ⚠️ <strong>주의:</strong> 학교나 회사 계정은 보안 문제로 생성 오류가 날 수 있습니다.<br>
                         오류 발생 시 <strong>'개인 구글 계정(@gmail.com)'</strong>으로 로그인해서 시도해주세요.
                     </div>
                     <div class="text-[11px] text-gray-400 mb-2 mt-2 leading-relaxed">
-                        API 키를 입력하면 Gemini가 직접 글을 작성해줍니다. (OFF 시 랜덤 템플릿 사용)<br>
+                        API 키를 입력하면 Gemini가 직접 글을 작성해줍니다.<br>
+                        키가 없으면 내장된 랜덤 템플릿이 작동합니다.<br>
                         <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-dusty-pink underline hover:text-gray-600">Google AI Studio에서 키 발급받기 →</a>
                     </div>
                     <div class="flex gap-2">
@@ -355,14 +348,13 @@
                 loadFormula();
                 // Load grid
                 renderGrid(); 
-                // Load Saved API Key and set Toggle State
+                // Load Saved API Key
                 loadApiKey();
             }
         });
 
         // --- Common State & Functions ---
         let currentLang = 'ko';
-        let isApiMode = false; // Default to Template Mode
 
         function switchTab(tabName) {
             const tabs = ['guide', 'generator', 'grid'];
@@ -435,25 +427,15 @@
             setTimeout(() => toast.classList.add('opacity-0'), 2000);
         }
 
-        // --- API Toggle Switch Logic ---
-        function toggleApiState() {
-            isApiMode = !isApiMode;
-            const btn = document.getElementById('apiToggleBtn');
-            const circle = document.getElementById('apiToggleCircle');
+        function toggleApiKeySection() {
             const section = document.getElementById('apiKeySection');
-
-            if (isApiMode) {
-                // ON state
-                btn.classList.remove('bg-gray-300');
-                btn.classList.add('bg-[#C5A0A0]'); // Warm pink
-                circle.classList.add('translate-x-4');
+            const chevron = document.getElementById('api-chevron');
+            if (section.classList.contains('hidden')) {
                 section.classList.remove('hidden');
+                chevron.classList.add('rotate-180');
             } else {
-                // OFF state
-                btn.classList.remove('bg-[#C5A0A0]');
-                btn.classList.add('bg-gray-300');
-                circle.classList.remove('translate-x-4');
                 section.classList.add('hidden');
+                chevron.classList.remove('rotate-180');
             }
         }
 
@@ -479,7 +461,6 @@
         }
 
         // --- Image Formula Storage Logic ---
-        // REVISED: Updated with the specific "soft bright mute mood" prompt requested by the user
         const DEFAULT_FORMULA = ", soft bright mute mood, vintage-inspired feminine aesthetic, airy and luminous atmosphere, coquette balletcore vibe, dreamy and hazy feeling, soft diffused morning light, subtle film grain, gentle motion blur, nostalgic pinterest-style photography, clean and light overall tone, soft glow, minimal contrast, --ar 9:16 --stylize 250";
         const FORMULA_STORAGE_KEY = 'dearToeFormula';
 
@@ -562,19 +543,10 @@
                 alert("번역할 텍스트를 입력해주세요.");
                 return;
             }
-            
-            if (!isApiMode) {
-                 alert("번역 기능을 사용하려면 API 설정을 켜주세요.");
-                 // Optional: Open the section to prompt user
-                 if(document.getElementById('apiKeySection').classList.contains('hidden')) {
-                     toggleApiState();
-                 }
-                 return;
-            }
 
             const apiKey = document.getElementById('userApiKey').value.trim();
             if (!apiKey) {
-                alert("API Key가 필요합니다.");
+                alert("번역 기능을 사용하려면 API Key를 저장해주세요.");
                 return;
             }
 
@@ -583,8 +555,7 @@
             subjectEl.placeholder = "Translating...";
             
             try {
-                // UPDATED: Using stable version 001
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${apiKey}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -654,6 +625,10 @@
             } else {
                 return balletEmojis[Math.floor(Math.random() * balletEmojis.length)];
             }
+        }
+
+        function getOptionalDecoration() {
+            return Math.random() > 0.5 ? getDecoration() : "";
         }
 
         // --- Grid Planner Logic ---
@@ -778,17 +753,16 @@
             let opt1, opt2, opt3;
 
             if (currentLang === 'ko') {
-                const phrases = ["가장 좋아하는 질감들의 조합.", "만지고 싶은 부드러움.", "새틴에 닿은 빛이 유난히 예뻤던.", "무심하게 풀린 리본마저 그림 같은.", "오래된 토슈즈가 주는 뭉클함.", "이 시간의 빛을 영원히 가두고 싶다.", "현실감이 사라지는 오후 4시의 무드.", "먼지마저 반짝이는 공간.", "숨죽이게 만드는 고요함.", "말문이 막히는 완벽한 선.", "중력을 거스르는 듯한 가벼움.", "한 폭의 명화 같은 순간.", "내가 꿈꾸는 가장 이상적인 실루엣."];
+                const phrases = ["가장 좋아하는 질감들의 조합", "만지고 싶은 부드러움", "새틴에 닿은 빛이 유난히 예뻤던", "무심하게 풀린 리본마저 그림 같은", "오래된 토슈즈가 주는 뭉클함", "이 시간의 빛을 영원히 가두고 싶다", "현실감이 사라지는 오후 4시의 무드", "먼지마저 반짝이는 공간", "숨죽이게 만드는 고요함", "말문이 막히는 완벽한 선", "중력을 거스르는 듯한 가벼움", "한 폭의 명화 같은 순간", "내가 꿈꾸는 가장 이상적인 실루엣"];
                 const phrase = phrases[Math.floor(Math.random() * phrases.length)];
                 
-                // Updated Korean Template to reflect "Owner's Feeling"
-                const raw1 = phrase; // Just the phrase itself
-                const raw2 = `이런 분위기.`;
-                const raw3 = `기억하고 싶은 장면.`;
+                const raw1 = phrase; 
+                const raw2 = `이런 분위기`;
+                const raw3 = `기억하고 싶은 장면`;
 
-                opt1 = `${applyStyle(raw1)} ${getDecoration()}\n.\n${tags}`;
-                opt2 = `${applyStyle(raw2)} ${getDecoration()}\n.\n${tags}`;
-                opt3 = `${applyStyle(raw3)} ${getDecoration()}\n.\n${tags}`;
+                opt1 = `${applyStyle(raw1)} ${getOptionalDecoration()}\n.\n${tags}`;
+                opt2 = `${applyStyle(raw2)} ${getOptionalDecoration()}\n.\n${tags}`;
+                opt3 = `${applyStyle(raw3)} ${getOptionalDecoration()}\n.\n${tags}`;
             } else {
                 // Removed periods from English phrases
                 const phrases = ["Soft layers", "En pointe", "Silence", "Mood", "Grand Plié", "Morning light", "Pure lines", "Tendu", "Satin mood", "Ethereal", "Tulle dreams", "Graceful", "Adagio", "Swan lake", "Ballerina soul"];
@@ -798,9 +772,9 @@
                 const raw2 = `Satin mood`;
                 const raw3 = `Attitude`;
 
-                opt1 = `${applyStyle(raw1)} ${getDecoration()}\n.\n${tags}`;
-                opt2 = `${applyStyle(raw2)} ${getDecoration()}\n.\n${tags}`;
-                opt3 = `${applyStyle(raw3)} ${getDecoration()}\n.\n${tags}`;
+                opt1 = `${applyStyle(raw1)} ${getOptionalDecoration()}\n.\n${tags}`;
+                opt2 = `${applyStyle(raw2)} ${getOptionalDecoration()}\n.\n${tags}`;
+                opt3 = `${applyStyle(raw3)} ${getOptionalDecoration()}\n.\n${tags}`;
             }
 
             document.getElementById('result1').innerText = opt1;
@@ -810,9 +784,9 @@
 
         async function generateWithAI(input, apiKey) {
             const langInstruction = currentLang === 'ko' ? "Use Korean." : "Use English.";
-            const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. Tone: Dry, Chic, Minimalist but dreamy. Rules: Use 1-2 emojis (e.g. 🩰, 🦢, ☁️, 🎀, 🪽) OR 1-2 aesthetic symbols (e.g. 𖥔, ݁, ˖, ˳, 𓂃, 𝜗𝜚, 𓆩♡𓆪, ☪︎). STRICT RULE: Do NOT mix standard emojis with aesthetic symbols in the same caption. Use ONE type or the other. Short (2-3 lines). No greetings. ${langInstruction}. STRICT RULE: Do NOT mix languages in the caption text. For English captions, do NOT use a period (.) at the end of the sentence. The user wants captions that express the "owner's subjective feelings/impressions" about the beauty of the image. Avoid generic descriptions. IMPORTANT: Do NOT repeat the user's input description in the output. Use it only as context to generate a mood/keyword. (Hashtags are handled separately, so just generate the text). Provide 3 distinct options separated by '|||'. Input description: ${input}`;
+            const systemPrompt = `You are the editor of 'dear.toe', an aesthetic ballet archive Instagram account. Tone: Dry, Chic, Minimalist but dreamy. Rules: Decorations (emojis/symbols) are optional. Add them randomly (about 50% chance). Short (2-3 lines). No greetings. ${langInstruction}. STRICT RULE: Do NOT mix languages in the caption text. For both Korean and English captions, do NOT use a period (.) at the end of the sentence. The user wants captions that express the "owner's subjective feelings/impressions" about the beauty of the image. Avoid generic descriptions. IMPORTANT: Do NOT repeat the user's input description in the output. Use it only as context to generate a mood/keyword. (Hashtags are handled separately, so just generate the text). Provide 3 distinct options separated by '|||'. Input description: ${input}`;
             // UPDATED: Using stable version 001
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${apiKey}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -848,10 +822,9 @@
             btn.disabled = true;
 
             try {
-                if (isApiMode && apiKey) {
+                if (apiKey) {
                     await generateWithAI(input, apiKey);
                 } else {
-                    // Fallback to template if API mode is off or no key
                     generateWithTemplate(input);
                 }
                 resultArea.classList.remove('hidden');
