@@ -71,14 +71,6 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Toggle Switch Animation */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #C5A0A0;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #C5A0A0;
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
@@ -128,6 +120,20 @@
                     <a href="https://www.notion.so/nrise/2b9b116f13a28032a921cc872ecfef8d?source=copy_link" target="_blank" class="mt-4 block w-full py-2.5 bg-white border border-[#E8D3D3] rounded text-center text-xs text-dusty-pink hover:bg-[#E8D3D3] hover:text-white transition-colors flex items-center justify-center gap-2">
                         <i data-lucide="book-open" class="w-3 h-3"></i> 노션 가이드 보러가기
                     </a>
+                </div>
+            </section>
+
+            <!-- Bio Options -->
+            <section>
+                <h2 class="serif text-xl mb-4 italic text-gray-800 flex items-center">
+                    <i data-lucide="user" class="w-4 h-4 mr-2 text-dusty-pink"></i> Bio
+                </h2>
+                <div class="grid gap-4 text-sm">
+                    <!-- Option A (Confirmed) -->
+                    <div class="group relative border border-gray-100 rounded-lg p-4 hover:border-[#E8D3D3] transition-colors cursor-pointer" onclick="copyText(this, 'bio1')">
+                        <p id="bio1" class="text-gray-600 leading-relaxed text-center">발레 | 무드 | 아카이브 🦢<br>* . ˚ 🩰 * . *</p>
+                        <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-xs text-dusty-pink transition-opacity">Click to Copy</span>
+                    </div>
                 </div>
             </section>
 
@@ -189,46 +195,11 @@
         <div id="content-generator" class="hidden p-8 space-y-8 animate-fade-in">
             <div class="text-center space-y-2 mb-8">
                 <h2 class="serif text-2xl italic text-gray-800">Caption Maker</h2>
-                <p class="text-xs text-gray-400 font-light">Enter description, get aesthetic caption only.</p>
+                <p class="text-xs text-gray-400 font-light">Enter description, get aesthetic caption.</p>
             </div>
 
-            <!-- MODE Toggle: Generate vs Prompt Guide -->
-            <div class="flex justify-center mb-6">
-                <div class="bg-white p-1 rounded-full border border-gray-200 flex">
-                    <button onclick="setCaptionMode('generate')" id="mode-generate" class="px-6 py-2 rounded-full text-xs font-medium transition-colors bg-[#E8D3D3] text-[#4A4A4A]">AI 자동 생성</button>
-                    <button onclick="setCaptionMode('prompt')" id="mode-prompt" class="px-6 py-2 rounded-full text-xs font-medium text-gray-400 transition-colors hover:text-gray-600">프롬프트 가이드</button>
-                </div>
-            </div>
-
-            <!-- API Key Section (Visible only in Generate Mode) -->
-            <div id="apiSectionContainer" class="mb-8 border border-[#E8D3D3] rounded-lg overflow-hidden">
-                <div class="flex justify-between items-center p-3 bg-[#FDFBF7]">
-                    <span class="flex items-center text-xs text-gray-500">
-                        <i data-lucide="key" class="w-3 h-3 mr-2"></i> Google Gemini API 설정
-                    </span>
-                    <!-- Toggle Switch (OFF by default) -->
-                    <button id="apiToggleBtn" onclick="toggleApiState()" class="w-8 h-4 rounded-full bg-gray-300 relative transition-colors focus:outline-none">
-                        <div id="apiToggleCircle" class="w-3 h-3 rounded-full bg-white shadow-sm absolute top-0.5 left-0.5 transition-transform"></div>
-                    </button>
-                </div>
-                
-                <div id="apiKeySection" class="hidden bg-white p-4 border-t border-[#E8D3D3]">
-                    <div class="text-[11px] text-gray-400 mb-2 mt-2 leading-relaxed">
-                        API 키를 입력하면 Gemini가 직접 글을 작성해줍니다.<br>
-                        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-dusty-pink underline hover:text-gray-600">Google AI Studio에서 키 발급받기 →</a>
-                    </div>
-                    <div class="flex gap-2">
-                        <input type="password" id="userApiKey" placeholder="AI..." value=""
-                            class="flex-1 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#C5A0A0] transition-colors">
-                        <button onclick="saveApiKey()" class="px-4 bg-gray-800 text-white text-xs rounded hover:bg-gray-700 transition-colors shadow-sm whitespace-nowrap">
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Input Area -->
-            <div class="space-y-4">
+            <!-- 1. Input Area (Shared) -->
+            <div class="space-y-4 mb-8">
                 <div>
                     <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Photo Situation / Keyword</label>
                     <input type="text" id="userInput" placeholder="예: 발레 토슈즈 사진" 
@@ -236,44 +207,78 @@
                         oninput="updatePromptGuidePreview()">
                 </div>
                 
-                <div class="flex flex-col gap-4">
-                    <div class="flex gap-4 items-center">
-                        <div class="flex-1" id="languageSection">
-                            <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Language</label>
-                            <div class="flex gap-2">
-                                <button onclick="setLanguage('ko')" id="lang-ko" class="flex-1 py-2 text-xs border border-[#C5A0A0] bg-[#E8D3D3] text-gray-700 rounded transition-colors">Korean</button>
-                                <button onclick="setLanguage('en')" id="lang-en" class="flex-1 py-2 text-xs border border-gray-200 text-gray-400 rounded hover:bg-gray-50 transition-colors">English</button>
-                            </div>
-                        </div>
-                        <div class="flex-1" id="styleOptionContainer">
-                             <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Style</label>
-                             <div class="flex items-center h-[34px]">
-                                <input type="checkbox" id="aestheticFont" class="w-4 h-4 text-dusty-pink border-gray-300 rounded focus:ring-dusty-pink" checked>
-                                <label for="aestheticFont" class="ml-2 text-xs text-gray-600 cursor-pointer select-none">✨ Aesthetic Font 적용</label>
-                             </div>
+                <!-- Options (Language & Style) -->
+                <div class="flex gap-4 items-center">
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Language</label>
+                        <div class="flex gap-1">
+                            <button onclick="setLanguage('ko')" id="lang-ko" class="flex-1 py-2 text-xs border border-[#C5A0A0] bg-[#E8D3D3] text-gray-700 rounded transition-colors">KR</button>
+                            <button onclick="setLanguage('en')" id="lang-en" class="flex-1 py-2 text-xs border border-gray-200 text-gray-400 rounded hover:bg-gray-50 transition-colors">EN</button>
                         </div>
                     </div>
-                    <button onclick="handleGenerate()" id="generateBtn" class="w-full h-[42px] bg-gray-800 text-white text-xs tracking-wider rounded hover:bg-gray-700 transition-colors shadow-sm flex items-center justify-center">
-                        GENERATE (5 Options)
-                    </button>
-
-                    <!-- Mode 2: PROMPT GUIDE View -->
-                    <div id="promptGuideContainer" class="hidden">
-                         <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-2">Copy this Prompt to ChatGPT/Claude</label>
-                        <div class="relative bg-gray-800 rounded-lg p-4 group cursor-pointer hover:bg-gray-700 transition-colors" onclick="copyPromptGuide()">
-                            <p id="promptGuideText" class="text-xs text-gray-300 font-mono break-all leading-relaxed whitespace-pre-wrap"></p>
-                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="bg-white text-gray-800 text-[10px] px-2 py-1 rounded font-bold shadow-md">Copy</span>
-                            </div>
-                        </div>
+                    <div class="flex-1">
+                         <label class="block text-xs text-gray-500 uppercase tracking-wider mb-2">Style</label>
+                         <div class="flex items-center h-[34px]">
+                            <input type="checkbox" id="aestheticFont" class="w-4 h-4 text-dusty-pink border-gray-300 rounded focus:ring-dusty-pink" checked>
+                            <label for="aestheticFont" class="ml-2 text-xs text-gray-600 cursor-pointer select-none">✨ Aesthetic Font</label>
+                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Output Area -->
-            <div id="resultArea" class="hidden space-y-6 pt-4 border-t border-gray-100">
-                <!-- Variations will be injected here -->
+            <!-- 2. Prompt Guide Section (Manual AI Use) -->
+            <div class="mb-8 border border-[#E8D3D3] rounded-lg overflow-hidden bg-white">
+                <div class="p-3 bg-[#FDFBF7] border-b border-[#E8D3D3] flex items-center justify-between">
+                    <span class="text-xs font-medium text-gray-600"><i data-lucide="clipboard-copy" class="w-3 h-3 inline mr-1"></i> 프롬프트 가이드 (ChatGPT/Claude용)</span>
+                    <button onclick="copyPromptGuide()" class="text-[10px] text-dusty-pink hover:text-gray-800 underline">Copy Prompt</button>
+                </div>
+                <div class="p-4 bg-gray-50 group cursor-pointer" onclick="copyPromptGuide()">
+                    <p id="promptGuideText" class="text-[11px] text-gray-500 font-mono break-all leading-relaxed whitespace-pre-wrap hover:text-gray-700 transition-colors"></p>
+                </div>
             </div>
+
+            <!-- 3. AI Auto Generation Section -->
+            <div class="border-t border-gray-200 pt-8">
+                <h3 class="serif text-lg italic text-gray-800 mb-4 flex items-center">
+                    <i data-lucide="sparkles" class="w-4 h-4 mr-2 text-dusty-pink"></i> AI Auto Generation
+                </h3>
+
+                <!-- API Key Settings -->
+                <div class="mb-4 border border-[#E8D3D3] rounded-lg overflow-hidden">
+                    <div class="flex justify-between items-center p-3 bg-[#FDFBF7] cursor-pointer" onclick="toggleApiState()">
+                        <span class="flex items-center text-xs text-gray-500">
+                            <i data-lucide="key" class="w-3 h-3 mr-2"></i> Google Gemini API 설정
+                        </span>
+                        <div class="relative">
+                            <button id="apiToggleBtn" class="w-8 h-4 rounded-full bg-gray-300 relative transition-colors focus:outline-none">
+                                <div id="apiToggleCircle" class="w-3 h-3 rounded-full bg-white shadow-sm absolute top-0.5 left-0.5 transition-transform"></div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="apiKeySection" class="hidden bg-white p-4 border-t border-[#E8D3D3]">
+                        <div class="text-[11px] text-gray-400 mb-2 leading-relaxed">
+                            API Key를 입력하면 Gemini가 직접 글을 작성합니다. (OFF시 템플릿 사용)<br>
+                            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-dusty-pink underline hover:text-gray-600">Google AI Studio에서 키 발급받기 →</a>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="password" id="userApiKey" placeholder="AI..." value=""
+                                class="flex-1 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#C5A0A0] transition-colors">
+                            <button onclick="saveApiKey()" class="px-4 bg-gray-800 text-white text-xs rounded hover:bg-gray-700 transition-colors shadow-sm whitespace-nowrap">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="handleGenerate()" id="generateBtn" class="w-full h-[42px] bg-gray-800 text-white text-xs tracking-wider rounded hover:bg-gray-700 transition-colors shadow-sm flex items-center justify-center">
+                    GENERATE (5 Options)
+                </button>
+
+                <!-- Output Area -->
+                <div id="resultArea" class="hidden space-y-6 pt-6 mt-2">
+                    <!-- Results injected here -->
+                </div>
+            </div>
+
         </div>
 
         <!-- Content: Grid Planner -->
@@ -367,7 +372,6 @@
         // --- Common State & Functions ---
         let currentLang = 'ko';
         let isApiMode = false; // Default to OFF (Template Mode)
-        let captionMode = 'generate';
 
         function switchTab(tabName) {
             const tabs = ['guide', 'generator', 'grid'];
@@ -484,10 +488,8 @@
                 const input = document.getElementById('userApiKey');
                 if(input) input.value = savedKey;
             }
-            // Ensure section is open if in API mode
-            if (isApiMode) {
-                document.getElementById('apiKeySection').classList.remove('hidden');
-            }
+            // Ensure section is hidden by default (off state)
+            document.getElementById('apiKeySection').classList.add('hidden');
         }
 
         function saveApiKey() {
@@ -812,10 +814,9 @@
             return `${baseTags} ${shuffled.slice(0, 3).join(' ')}`;
         }
 
-        // Function to render results (up to 5)
         function renderResults(options, tags) {
             const resultArea = document.getElementById('resultArea');
-            resultArea.innerHTML = ''; // Clear previous results
+            resultArea.innerHTML = ''; 
 
             options.forEach((option, index) => {
                 const text = `${option}\n.\n${tags}`;
@@ -848,8 +849,6 @@
                         "턴아웃이 제일 어려워 🥲"
                     ];
                     const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-                    
-                    // Updated Korean Template logic for richer emojis
                     const koDeco = " " + getKoRichDecoration();
                     options.push(`${phrase}${koDeco}`);
                 } else {
@@ -863,45 +862,6 @@
                 }
             }
             renderResults(options, tags);
-        }
-
-        // --- Caption Mode Switching ---
-        function setCaptionMode(mode) {
-            captionMode = mode;
-            const btnGen = document.getElementById('mode-generate');
-            const btnPrompt = document.getElementById('mode-prompt');
-            
-            const apiContainer = document.getElementById('apiSectionContainer');
-            const genBtn = document.getElementById('generateBtn');
-            const promptContainer = document.getElementById('promptGuideContainer');
-            const resultArea = document.getElementById('resultArea');
-            const styleOption = document.getElementById('styleOptionContainer');
-
-            if (mode === 'generate') {
-                btnGen.classList.add('bg-[#E8D3D3]', 'text-[#4A4A4A]');
-                btnGen.classList.remove('text-gray-400');
-                btnPrompt.classList.remove('bg-[#E8D3D3]', 'text-[#4A4A4A]');
-                btnPrompt.classList.add('text-gray-400');
-
-                apiContainer.classList.remove('hidden');
-                genBtn.classList.remove('hidden');
-                promptContainer.classList.add('hidden');
-                styleOption.classList.remove('hidden');
-                resultArea.classList.remove('hidden');
-            } else {
-                btnPrompt.classList.add('bg-[#E8D3D3]', 'text-[#4A4A4A]');
-                btnPrompt.classList.remove('text-gray-400');
-                btnGen.classList.remove('bg-[#E8D3D3]', 'text-[#4A4A4A]');
-                btnGen.classList.add('text-gray-400');
-
-                apiContainer.classList.add('hidden');
-                genBtn.classList.add('hidden');
-                promptContainer.classList.remove('hidden');
-                styleOption.classList.add('hidden'); 
-                resultArea.classList.add('hidden');
-                
-                updatePromptGuidePreview(); 
-            }
         }
         
         function updatePromptGuidePreview() {
